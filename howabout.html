@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clear-jp-dev - Elite Tech Internships</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            background: #f4f6f8;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Utility & Base Styles */
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .nav-links a {
+            margin-left: 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(to bottom right, #eef2f7, #ffffff);
+            padding: 6rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .hero-content-box h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #222;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content-box p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            border-radius: 9999px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-bar button {
+            background: #2563eb;
+            border: none;
+            color: #fff;
+            padding: 0 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Floating Keywords */
+        .floating-keywords {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .keyword {
+            position: absolute;
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0.4;
+            mix-blend-mode: multiply;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #222;
+        }
+
+        /* Featured Companies */
+        .companies-section {
+            padding: 4rem 1rem;
+            background: #fff;
+        }
+
+        .companies-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .company-card {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            width: 140px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .company-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .company-card img {
+            margin-bottom: 0.75rem;
+        }
+
+        .company-card .name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 4rem 1rem;
+            background: #f9f9f9;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            max-width: 250px;
+            text-align: center;
+        }
+
+        .feature h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 4rem 1rem;
+            background: #fff;
+        }
+
+        .testimonials-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .testimonial {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.3s;
+        }
+
+        .testimonial:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem 1rem;
+            text-align: center;
+            background: #eef2f7;
+        }
+
+        .cta-section p {
+            font-size: 1rem;
+            color: #555;
+            max-width: 500px;
+            margin: 1rem auto;
+            line-height: 1.5;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #eee;
+            padding: 2rem 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            background: #fff;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .nav-links a {
+                margin-left: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-bar {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+            }
+
+            .nav-links a {
+                margin-left: 0.75rem;
+                font-size: 0.85rem;
+            }
+
+            .company-card {
+                width: 120px;
+                padding: 1rem;
+            }
+
+            .cta-button {
+                padding: 0.6rem 1.5rem;
+            }
+        }
+    </style>
+    <!-- htmx -->
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="text-xl font-bold">clear-jp-dev</a>
+                <nav class="nav-links">
+                    <a href="#jobs">Jobs</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#" class="font-semibold">Sign In</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="floating-keywords" id="floating-keywords">
+            <!-- キーワードオブジェクトはJavaScriptで動的に追加されます -->
+        </div>
+        <div class="container">
+            <div class="hero-content-box">
+                <h1>Find Elite Tech Internships</h1>
+                <p>Connect with top-tier US companies. No fluff, no gimmicks. Just transparent info on compensation,
+                    tech stacks, and culture. Step into your high-paying tech future with clarity.</p>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search by skill, company, or location...">
+                    <button>Search</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="companies-section" id="jobs">
+        <div class="container">
+            <h2 class="section-title text-center mb-8">Featured Companies</h2>
+            <div hx-get="/featured_companies" hx-trigger="load" hx-target="#companies-list" hx-swap="innerHTML">
+                <div id="companies-list" class="companies-list">
+                    <div class="text-sm text-gray-500">Loading companies...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="container text-center">
+            <h2 class="section-title">Why Choose clear-jp-dev?</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3>Curated Listings</h3>
+                    <p>We rigorously vet every company. No random postings, only serious opportunities from respected
+                        industry leaders and rising stars.</p>
+                </div>
+                <div class="feature">
+                    <h3>Transparent Compensation</h3>
+                    <p>No fluff. Just clear salary ranges, benefits, and perks so you can make the right decision
+                        without guesswork.</p>
+                </div>
+                <div class="feature">
+                    <h3>Cutting-Edge Tech</h3>
+                    <p>Work with modern stacks, AI-driven solutions, and cloud-native infrastructures at top US
+                        companies.</p>
+                </div>
+                <div class="feature">
+                    <h3>Global Opportunities</h3>
+                    <p>Remote-friendly roles or relocation support let you tap into the US market from anywhere in the
+                        world.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title text-center mb-8">What Our Users Say</h2>
+            <div hx-get="/testimonials" hx-trigger="load" hx-target="#testimonials-list" hx-swap="innerHTML"
+                class="text-center">
+                <div id="testimonials-list" class="testimonials-list">
+                    <div class="text-sm text-gray-500">Loading testimonials...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Ready to Get Started?</h2>
+            <p>Sign up to browse internships or submit your company's listing request for review. Clear your path to a
+                top-tier internship with no distractions.</p>
+            <a href="#" class="cta-button">Sign Up</a>
+        </div>
+    </section>
+
+    <footer>
+        © 2024 clear-jp-dev. All Rights Reserved.
+    </footer>
+
+    <!-- Mock server responses (For demonstration purpose only) -->
+    <div style="display:none;">
+        <!-- Featured Companies Template (/featured_companies) -->
+        <template id="featured_companies_template">
+            <div class="company-card">
+                <img src="https://via.placeholder.com/80?text=Google" alt="Google" />
+                <div class="name">Google</div>
+            </div>
+            <div class="company-card">
+                <img src="https://via.placeholder.com/80?text=Meta" alt="Meta" />
+                <div class="name">Meta</div>
+            </div>
+            <div class="company-card">
+                <img src="https://via.placeholder.com/80?text=Airbnb" alt="Airbnb" />
+                <div class="name">Airbnb</div>
+            </div>
+            <div class="company-card">
+                <img src="https://via.placeholder.com/80?text=Stripe" alt="Stripe" />
+                <div class="name">Stripe</div>
+            </div>
+            <div class="company-card">
+                <img src="https://via.placeholder.com/80?text=Netflix" alt="Netflix" />
+                <div class="name">Netflix</div>
+            </div>
+            <div class="company-card">
+                <img src="https://via.placeholder.com/80?text=Figma" alt="Figma" />
+                <div class="name">Figma</div>
+            </div>
+        </template>
+
+        <!-- Testimonials Template (/testimonials) -->
+        <template id="testimonials_template">
+            <div class="testimonial">
+                <p>“clear-jp-dev helped me find a top-tier US internship. The listings were direct and professional—no
+                    wasted time.”</p>
+                <h4>— A. Suzuki, SWE Intern</h4>
+            </div>
+            <div class="testimonial">
+                <p>“As a student in Japan, I navigated the US market easily thanks to clear-jp-dev. Transparent salaries
+                    and stacks let me choose confidently.”</p>
+                <h4>— K. Tanaka, Data Scientist Intern</h4>
+            </div>
+        </template>
+    </div>
+
+    <!-- Floating Keywords Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const keywords = ["New York", "developers", "backend", "react", "database", "AI", "remote", "cloud", "Python", "JavaScript"];
+            const floatingKeywordsContainer = document.getElementById('floating-keywords');
+            const numKeywords = 15; // Number of floating keywords
+            const keywordElements = [];
+
+            // Create keyword elements
+            for (let i = 0; i < numKeywords; i++) {
+                const keyword = keywords[Math.floor(Math.random() * keywords.length)];
+                const elem = document.createElement('div');
+                elem.classList.add('keyword');
+                elem.textContent = keyword;
+                floatingKeywordsContainer.appendChild(elem);
+                keywordElements.push(elem);
+            }
+
+            // Initialize positions
+            keywordElements.forEach(elem => {
+                elem.style.top = `${Math.random() * 100}%`;
+                elem.style.left = `${Math.random() * 100}%`;
+                elem.style.opacity = 0.4;
+            });
+
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animate() {
+                keywordElements.forEach((elem, index) => {
+                    const speed = (index + 1) * 0.2;
+                    const targetX = mouseX + (Math.random() - 0.5) * 150;
+                    const targetY = mouseY + (Math.random() - 0.5) * 150;
+                    const currentX = parseFloat(elem.style.left);
+                    const currentY = parseFloat(elem.style.top);
+                    const newX = currentX + (targetX / window.innerWidth * 100 - currentX) * 0.05 * speed;
+                    const newY = currentY + (targetY / window.innerHeight * 100 - currentY) * 0.05 * speed;
+
+                    elem.style.transform = `translate(${newX}%, ${newY}%) scale(1.2)`;
+                    elem.style.opacity = 0.3 + Math.random() * 0.4;
+                });
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        });
+    </script>
+
+    <script>
+        document.addEventListener('htmx:afterRequest', (e) => {
+            const url = e.detail.requestConfig.path;
+            if (url === '/featured_companies') {
+                e.detail.target.innerHTML = document.querySelector('#featured_companies_template').innerHTML;
+            }
+            if (url === '/testimonials') {
+                e.detail.target.innerHTML = document.querySelector('#testimonials_template').innerHTML;
+            }
+        });
+    </script>
+</body>
+
+</html>
