@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Internship Finder</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #ffffff;
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #eee;
+    }
+    header .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+      text-decoration: none;
+    }
+    header nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #333;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .hero p {
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+    .hero .cta-button {
+      display: inline-block;
+      background: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+    .hero .cta-button:hover {
+      background: #1e4e7d;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+      gap: 2rem;
+    }
+    .feature {
+      flex: 1 1 calc(33% - 2rem);
+      min-width: 250px;
+    }
+    .feature h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    .feature p {
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    footer {
+      border-top: 1px solid #eee;
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    @media (max-width: 768px) {
+      .features {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="#">Internship Finder</a>
+    <nav>
+      <a href="#">Jobs</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+  <section class="hero">
+    <h1>シンプルで信頼できる、エンジニアインターン探し</h1>
+    <p>余計な宣伝文句やゴチャゴチャした広告は一切なし。  
+      ゴリゴリの「就活」ワードに惑わされず、  
+      報酬、使用技術、環境など、エンジニアに本当に必要な情報だけを提供します。</p>
+    <a href="#" class="cta-button">インターン情報を探す</a>
+  </section>
+  <section class="features">
+    <div class="feature">
+      <h3>厳選された企業のみ掲載</h3>
+      <p>企業が自由に書き込むことはできません。必ず審査を通した上での掲載なので、信頼度の高い情報が得られます。</p>
+    </div>
+    <div class="feature">
+      <h3>使用技術・報酬を明確に</h3>
+      <p>フロント、バックエンド、クラウド、AIなど、どんなスキルセットが必要で、どんな技術が使えるかを明確に記載。給与や条件もわかりやすく提示します。</p>
+    </div>
+    <div class="feature">
+      <h3>海外風でシンプルなUI</h3>
+      <p>広告バナーだらけのサイトとは違い、必要な情報だけに焦点を当てたミニマルなUIで、快適な閲覧体験を提供します。</p>
+    </div>
+  </section>
+  <footer>
+    © 2024 Internship Finder
+  </footer>
+</body>
+</html>
