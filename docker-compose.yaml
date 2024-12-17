@@ -1,0 +1,41 @@
+version: '3.8' # Docker Compose file version
+
+services:
+  db:
+    image: postgres:14 # Use PostgreSQL version 14 image
+    container_name: aurelia-db # Set container name to 'aurelia-db'
+    restart: always # Always restart the container unless stopped manually
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} # Set PostgreSQL username to 'postgres'
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Set PostgreSQL password
+      POSTGRES_DB: aurelia_db # Set the default database name
+    ports:
+      - "5432:5432" # Map host port 5432 to container port 5432
+    volumes:
+      - db-data:/var/lib/postgresql/data # Persist database data in a Docker volume
+
+  app:
+    build: . # Build the image from the Dockerfile in the current directory
+    container_name: aurelia-app # Set container name to 'aurelia-app'
+    restart: always # Always restart the container unless stopped manually
+    depends_on:
+      - db # This service depends on 'db' service
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db # Database host is 'db' service
+      DB_PORT: 5432 # Database port
+      DB_USERNAME: ${DB_USERNAME} # Database username
+      DB_PASSWORD: ${DB_PASSWORD} # Database password
+      DB_NAME: aurelia_db # Database name
+    ports:
+      - "8080:8080" # Map host port 8080 to container port 8080
+    volumes:
+      - .:/app # Mount current directory to '/app' in the container
+    command: [ "go", "run", "cmd/server/main.go" ] # Command to run the Go application
+
+volumes:
+  db-data:
+    # Define Docker volume for database data
