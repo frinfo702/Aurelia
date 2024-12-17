@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clear-jp-dev - Elite Tech Internships</title>
+  <title>Aurelia - Golden Tech jobs</title>
   <style>
     body {
       margin: 0;
@@ -405,7 +405,7 @@
   <header>
     <div class="container">
       <div class="header-content">
-        <a href="#" class="text-xl font-bold">clear-jp-dev</a>
+        <a href="#" class="text-xl font-bold">Aurelia</a>
         <nav class="nav-links">
           <a href="#jobs">Jobs</a>
           <a href="#about">About</a>
@@ -494,7 +494,7 @@
   </section>
 
   <footer>
-    © 2024 clear-jp-dev. All Rights Reserved.
+    © 2024 Aurelia. All Rights Reserved.
   </footer>
 
   <!-- Mock server responses (For demonstration purpose only) -->
@@ -502,27 +502,24 @@
     <!-- Featured Companies Template (/featured_companies) -->
     <template id="featured_companies_template">
       <div class="company-card">
-        <img src="https://via.placeholder.com/80?text=Google" alt="Google" />
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg"
+          style="width: 60px; height: 60px;" />
         <div class="name">Google</div>
       </div>
       <div class="company-card">
-        <img src="https://via.placeholder.com/80?text=Meta" alt="Meta" />
-        <div class="name">Meta</div>
-      </div>
-      <div class="company-card">
-        <img src="https://via.placeholder.com/80?text=Airbnb" alt="Airbnb" />
+        <img src="https://www.vectorlogo.zone/logos/airbnb/airbnb-icon.svg" alt="Airbnb" />
         <div class="name">Airbnb</div>
       </div>
       <div class="company-card">
-        <img src="https://via.placeholder.com/80?text=Stripe" alt="Stripe" />
+        <img src="https://www.vectorlogo.zone/logos/stripe/stripe-icon.svg" alt="Stripe" />
         <div class="name">Stripe</div>
       </div>
       <div class="company-card">
-        <img src="https://via.placeholder.com/80?text=Netflix" alt="Netflix" />
+        <img src="https://www.vectorlogo.zone/logos/netflix/netflix-icon.svg" alt="Netflix" />
         <div class="name">Netflix</div>
       </div>
       <div class="company-card">
-        <img src="https://via.placeholder.com/80?text=Figma" alt="Figma" />
+        <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="Figma" />
         <div class="name">Figma</div>
       </div>
     </template>
@@ -577,7 +574,7 @@
 
       function animate() {
         keywordElements.forEach((elem, index) => {
-          const speed = (index + 1) * 0.2;
+          const speed = (index + 1) * 0.7;
           const targetX = mouseX + (Math.random() - 0.5) * 150;
           const targetY = mouseY + (Math.random() - 0.5) * 150;
           const currentX = parseFloat(elem.style.left);

@@ -1,0 +1,18 @@
+# ベースイメージ
+FROM golang:1.20-alpine
+
+# 作業ディレクトリの作成
+WORKDIR /app
+
+# Go Modulesのキャッシュ
+COPY go.mod go.sum ./
+RUN go mod download
+
+# ソースコードのコピー
+COPY . .
+
+# ビルド
+RUN go build -o server cmd/server/main.go
+
+# エントリーポイント
+CMD ["./server"]
