@@ -13,7 +13,7 @@ import (
 // TODO: db setup
 var (
 	dbHost     = "localhost"
-	dbPort     = 8080
+	dbPort     = 5432
 	dbUser     = "frinfo702"
 	dbPassword = "frinfo702"
 	dbName     = "Aurelia_database"
@@ -23,9 +23,9 @@ var (
 )
 
 func main() {
-	db, err := sql.Open("postgresql", psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		log.Fatal("failed to connect database")
+		log.Fatal("failed to connect database", err)
 	}
 	defer db.Close()
 
@@ -44,5 +44,5 @@ func NewRouter(db *sql.DB) *mux.Router {
 }
 
 func jobs(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprint(w, "Here is place for jobs")
+	fmt.Fprint(w, "Here is the place for jobs")
 }
