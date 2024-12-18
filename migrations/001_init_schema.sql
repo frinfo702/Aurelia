@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS companies (
-    id SERIAL PRIMARY KEY,
+    company_id SERIAL PRIMARY KEY,
     company_name VARCHAR(50) NOT NULL,
     company_overview TEXT,
     working_people_id INT,
@@ -14,17 +14,19 @@ CREATE TABLE IF NOT EXISTS companies (
     is_authorized BOOLEAN DEFAULT FALSE
 );
 CREATE TABLE IF NOT EXISTS jobs (
-    id SERIAL PRIMARY KEY,
-    company_id INT NOT NULL REFERENCES companies(id),
-    hiring_type VARCHAR(20) CHECK (hiring_type IN ('intern', 'fulltime', 'parttime', 'contract')),
-    -- 'intern', 'fulltime'など
+    job_id SERIAL PRIMARY KEY,
+    company_id INT NOT NULL REFERENCES companies(company_id),
+    hiring_type VARCHAR(20) CHECK (
+        hiring_type IN ('intern', 'fulltime', 'parttime', 'contract')
+    ),
+    technology_type VARCHAR(20),
     income_range INT,
     job_tag TEXT,
     requirements TEXT,
     used_technology TEXT
 );
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    user_id SERIAL PRIMARY KEY,
     user_name VARCHAR(30),
     user_address VARCHAR(100),
     user_mail VARCHAR(100) UNIQUE,
@@ -33,7 +35,7 @@ CREATE TABLE IF NOT EXISTS users (
     -- OAuth対応するなら provider, provider_user_id などのカラム追加も検討
 );
 CREATE TABLE IF NOT EXISTS inquiries (
-    id SERIAL PRIMARY KEY,
+    inquiry_id SERIAL PRIMARY KEY,
     company_name VARCHAR(50),
     company_overview TEXT,
     working_people_id INT,
@@ -49,8 +51,8 @@ CREATE TABLE IF NOT EXISTS inquiries (
     -- 承認されたらcompaniesテーブルへINSERTするフローを想定
 );
 CREATE TABLE IF NOT EXISTS auth_tokens (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
+    token_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),
     auth_token VARCHAR(200),
     issued_at TIMESTAMP DEFAULT NOW(),
     expires_at TIMESTAMP -- 期限付きのトークンを想定

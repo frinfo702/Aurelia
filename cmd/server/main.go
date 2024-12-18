@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"Aurelia/internal/handlers"
+
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
@@ -30,15 +32,19 @@ func main() {
 	}
 	defer db.Close()
 
-	NewRouter(db)
+	r := NewRouter(db)
+	log.Println("server started at port: 8080")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func NewRouter(db *sql.DB) *mux.Router {
 
+	jobHandler := handlers.NewJobHandler(db)
+
 	r := mux.NewRouter()
 
+	r.HandleFunc("api/jobs", jobHandler.GetJobsHandler).Methods(http.MethodGet)
 	r.HandleFunc("/jobs", jobs).Methods(http.MethodGet)
-	r.HandleFunc("/health", health).Methods(http.MethodGet)
 	log.Println("server started at port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 
@@ -47,9 +53,4 @@ func NewRouter(db *sql.DB) *mux.Router {
 
 func jobs(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, "Here is the place for jobs")
-}
-
-func health(w http.ResponseWriter, req *http.Request) {
-	log.Println("Health check status", http.StatusOK)
-	fmt.Fprint(w, "OK")
 }
