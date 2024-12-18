@@ -20,7 +20,7 @@ func NewJobHandler(db *sql.DB) *JobHandler {
 func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 	jobType := req.URL.Query().Get("type")
 	const query = `
-		SELECT job_id, company_id, company_id, hiring_type, income_range, 
+		SELECT job_id, company_id, hiring_type, technology_type, income_range, 
 		job_tag, requirements, used_technology	
 		FROM jobs
 		WHERE ($1 = '' OR hiring_type = $1)
