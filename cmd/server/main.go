@@ -50,6 +50,6 @@ func jobs(w http.ResponseWriter, req *http.Request) {
 }
 
 func health(w http.ResponseWriter, req *http.Request) {
-	log.Println(http.StatusOK)
+	log.Println("Health check status", http.StatusOK)
 	fmt.Fprint(w, "OK")
 }
