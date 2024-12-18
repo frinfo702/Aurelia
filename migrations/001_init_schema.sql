@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS companies (
 CREATE TABLE IF NOT EXISTS jobs (
     id SERIAL PRIMARY KEY,
     company_id INT NOT NULL REFERENCES companies(id),
-    hiring_type VARCHAR(20),
+    hiring_type VARCHAR(20) CHECK (hiring_type IN ('intern', 'fulltime', 'parttime', 'contract')),
     -- 'intern', 'fulltime'など
     income_range INT,
     job_tag TEXT,
