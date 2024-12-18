@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -14,9 +15,9 @@ import (
 var (
 	dbHost     = "localhost"
 	dbPort     = 5432
-	dbUser     = "frinfo702"
-	dbPassword = "frinfo702"
-	dbName     = "Aurelia_database"
+	dbUser     = os.Getenv("DB_USERNAME")
+	dbPassword = os.Getenv("DB_PASSWORD")
+	dbName     = "Aurelia_db"
 	psqlInfo   = fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
