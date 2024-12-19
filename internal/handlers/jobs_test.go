@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
+	"strconv"
 	"testing"
 	"time"
 
@@ -145,6 +147,61 @@ func TestGetJobsHandler(t *testing.T) {
 			err := json.Unmarshal(body, &jobs)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expectedCount, len(jobs))
+		})
+	}
+}
+
+func TestGetJobDetailHandler(t *testing.T) {
+	tests := []struct {
+		name           string
+		jobID          int
+		expectedJob    *models.Job
+		expectedStatus int
+	}{
+		{
+			name:  "Valid job ID returns correct job",
+			jobID: 1,
+			expectedJob: &models.Job{
+				JobID:          1,
+				CompanyID:      1,
+				HiringType:     "intern",
+				TechnologyType: "React",
+				IncomeRange:    300000,
+				JobTag:         "Backend",
+				Requirements:   "Go experience",
+				UsedTechnology: "Go, Docker",
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:           "Non-existence job ID",
+			jobID:          999,
+			expectedJob:    nil,
+			expectedStatus: http.StatusNotFound,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", "/api/jobs/detail?id="+strconv.Itoa(tt.jobID), nil)
+			w := httptest.NewRecorder()
+			handler := handlers.NewJobHandler(db)
+			handler.GetJobDetailHandler(w, req)
+
+			if w.Code != tt.expectedStatus {
+				t.Errorf("expected status %d; got %d", tt.expectedStatus, w.Code)
+			}
+
+			if tt.expectedJob != nil {
+				var gotJob models.Job
+				if err := json.NewDecoder(w.Body).Decode(&gotJob); err != nil {
+					t.Fatalf("failed to decode response: %v", err)
+				}
+
+				if !reflect.DeepEqual(gotJob, *tt.expectedJob) {
+					t.Errorf("expected job %+v; got %+v", tt.expectedJob, gotJob)
+				}
+			}
 		})
 	}
 }
