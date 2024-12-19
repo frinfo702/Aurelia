@@ -69,12 +69,13 @@ func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Reque
 		var err error
 		jobID, err = strconv.Atoi(id[0])
 		if err != nil {
-			log.Println("Query parameter might be invalid: ", err)
-			http.Error(w, "Query parameter might be invalid: ", http.StatusBadRequest)
+			log.Printf("Query parameter might be invalid: %v", err)
+			http.Error(w, "Invalid job ID provided in query parameter", http.StatusBadRequest)
 			return
 		}
 	} else {
-		jobID = 1
+		http.Error(w, "Missing job ID", http.StatusBadRequest)
+		return
 	}
 
 	// get the job which corresponds with {id}
@@ -123,7 +124,7 @@ func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Reque
 	// return job as json
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(job); err != nil {
-		log.Printf("error encording response: %v", err)
+		log.Printf("error encoding response: %v", err)
 		http.Error(w, "failed to encode response", http.StatusInternalServerError)
 		return
 	}
