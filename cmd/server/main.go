@@ -44,6 +44,7 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r := mux.NewRouter()
 
 	r.HandleFunc("api/jobs", jobHandler.GetJobsHandler).Methods(http.MethodGet)
+	r.HandleFunc("api/jobs/detail", jobHandler.GetJobDetailHandler).Methods(http.MethodGet)
 	r.HandleFunc("/jobs", jobs).Methods(http.MethodGet)
 	log.Println("server started at port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
