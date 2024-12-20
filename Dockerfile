@@ -1,18 +1,21 @@
-# ベースイメージ
+# Base image
 FROM golang:1.20-alpine
 
-# 作業ディレクトリの作成
+# Set the working directory
 WORKDIR /app
 
-# Go Modulesのキャッシュ
+# Copy go.mod and go.sum files
 COPY go.mod go.sum ./
 RUN go mod download
 
-# ソースコードのコピー
+# Copy the source code
 COPY . .
 
-# ビルド
+# Build the application
 RUN go build -o server cmd/server/main.go
 
-# エントリーポイント
+# Expose port 8080
+EXPOSE 8080
+
+# Set the entry point
 CMD ["./server"]

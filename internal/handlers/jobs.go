@@ -60,11 +60,9 @@ func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 
 // other Handlers for job
 func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Request) {
-	// parse {id} from url request body
 	queryMap := req.URL.Query()
 
 	var jobID int
-
 	if id, ok := queryMap["id"]; ok && len(id) > 0 {
 		var err error
 		jobID, err = strconv.Atoi(id[0])
@@ -78,28 +76,10 @@ func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	// get the job which corresponds with {id}
 	var job models.Job
-	job.JobID = jobID
-	const query = ` SELECT 
-		company_id,
-		hiring_type,
-		technology_type,
-		income_range,
-		job_tag,
-		requirements,
-		used_technology
-		FROM jobs	
-		WHERE job_id = $1
-	`
-	row := jH.db.QueryRow(query, jobID)
-	if err := row.Err(); err != nil {
-		log.Println("failed to fetch job", err)
-		http.Error(w, "failed to fetch job", http.StatusNotFound)
-		return
-	}
-
-	err := row.Scan(
+	query := `SELECT job_id, company_id, hiring_type, technology_type, income_range, job_tag, requirements, used_technology FROM jobs WHERE job_id = $1`
+	err := jH.db.QueryRow(query, jobID).Scan(
+		&job.JobID,
 		&job.CompanyID,
 		&job.HiringType,
 		&job.TechnologyType,
@@ -110,23 +90,14 @@ func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Reque
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			log.Printf("job not found: %v", err)
-			http.Error(w, "job not found", http.StatusNotFound)
-			return
-
+			http.Error(w, "Job not found", http.StatusNotFound)
 		} else {
-			log.Printf("error scanning job row: %v", err)
-			http.Error(w, "failed to scan job data", http.StatusInternalServerError)
-			return
+			log.Printf("error querying job detail: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		}
-	}
-
-	// return job as json
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(job); err != nil {
-		log.Printf("error encoding response: %v", err)
-		http.Error(w, "failed to encode response", http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(job)
 }
