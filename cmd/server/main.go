@@ -52,7 +52,7 @@ func createTable(db *sql.DB) error {
 	}
 	_, err = db.Exec(string(query))
 	if err != nil {
-		return fmt.Errorf("failed to excute create query %v", err)
+		return fmt.Errorf("failed to execute create query %v", err)
 	}
 
 	log.Println("Successfully initialize table")
@@ -66,7 +66,7 @@ func loadInitialData(db *sql.DB) error {
 	}
 	_, err = db.Exec(string(data))
 	if err != nil {
-		return fmt.Errorf("failed to excute data %v", err)
+		return fmt.Errorf("failed to execute data %v", err)
 	}
 
 	log.Println("Successfully loaded data")
