@@ -81,13 +81,23 @@ func NewRouter(db *sql.DB) *mux.Router {
 
 	r.HandleFunc("/api/jobs", jobHandler.GetJobsHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/jobs/detail", jobHandler.GetJobDetailHandler).Methods(http.MethodGet)
-	r.HandleFunc("/jobs", jobs).Methods(http.MethodGet)
+	r.HandleFunc("/", indexHandler)
+	r.HandleFunc("/jobs", jobsHandler)
+	r.HandleFunc("/jobs/detail", jobsDetailHandler)
 	log.Println("server started at port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 
 	return r
 }
 
-func jobs(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprint(w, "Here is the place for jobs")
+func indexHandler(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, "frontend_mock/index.html")
+}
+
+func jobsHandler(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, "frontend_mock/jobs.html")
+}
+
+func jobsDetailHandler(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, "frontend_mock/job_detail.html")
 }
