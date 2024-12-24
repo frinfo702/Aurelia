@@ -25,22 +25,8 @@ VALUES (
         'Private',
         'Artificial Intelligence, Machine Learning, Software Development',
         TRUE
-    );
-INSERT INTO companies (
-        company_name,
-        company_overview,
-        working_people_id,
-        culture_and_benefit,
-        establish_date,
-        company_website,
-        company_locations,
-        company_size,
-        total_raised,
-        company_type,
-        company_markets,
-        is_authorized
-    )
-VALUES (
+    ),
+    (
         'GreenEarth Industries',
         'Committed to sustainable manufacturing and eco-friendly products for a greener planet.',
         120,
@@ -53,22 +39,8 @@ VALUES (
         'Public',
         'Sustainable Manufacturing, Eco-Friendly Products',
         FALSE
-    );
-INSERT INTO companies (
-        company_name,
-        company_overview,
-        working_people_id,
-        culture_and_benefit,
-        establish_date,
-        company_website,
-        company_locations,
-        company_size,
-        total_raised,
-        company_type,
-        company_markets,
-        is_authorized
-    )
-VALUES (
+    ),
+    (
         'HealthWave Inc.',
         'Providing cutting-edge healthcare solutions and telemedicine services to improve patient outcomes.',
         500,
@@ -81,22 +53,8 @@ VALUES (
         'Private',
         'Healthcare, Telemedicine',
         TRUE
-    );
-INSERT INTO companies (
-        company_name,
-        company_overview,
-        working_people_id,
-        culture_and_benefit,
-        establish_date,
-        company_website,
-        company_locations,
-        company_size,
-        total_raised,
-        company_type,
-        company_markets,
-        is_authorized
-    )
-VALUES (
+    ),
+    (
         'EduNext Learning',
         'An online education platform offering a wide range of courses and professional certifications.',
         80,
@@ -110,20 +68,6 @@ VALUES (
         'Online Education, Professional Development',
         FALSE
     );
-INSERT INTO companies (
-        company_name,
-        company_overview,
-        working_people_id,
-        culture_and_benefit,
-        establish_date,
-        company_website,
-        company_locations,
-        company_size,
-        total_raised,
-        company_type,
-        company_markets,
-        is_authorized
-    )
 VALUES (
         'FinSecure LLC',
         'Specializing in cybersecurity solutions for financial institutions and safeguarding digital assets.',
