@@ -27,7 +27,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		log.Printf("Request %s %s", req.Method, req.URL.Path)
 		wrappedWriter := NewResLoggingWriter(w) // type casting by wrapping
-		next.ServeHTTP(w, req)
+		next.ServeHTTP(wrappedWriter, req)
 		log.Printf("Response Status %d", wrappedWriter.code)
 	})
 }
