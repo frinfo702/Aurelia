@@ -32,14 +32,14 @@ func main() {
 	}
 	defer db.Close()
 
-	err = createTable(db) // for only testing in browse!! delete it after!!
-	if err != nil {
-		log.Fatal("failed to create table", err)
-	}
-	err = loadInitialData(db) // for only testing in browse!! delete it after!!
-	if err != nil {
-		log.Fatal("failed to load initial data", err)
-	}
+	// err = createTable(db) // for only testing in browse!! delete it after!!
+	// if err != nil {
+	// 	log.Fatal("failed to create table", err)
+	// }
+	// err = loadInitialData(db) // for only testing in browse!! delete it after!!
+	// if err != nil {
+	// 	log.Fatal("failed to load initial data", err)
+	// }
 	r := NewRouter(db)
 	log.Println("server started at port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
@@ -84,6 +84,10 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/", indexHandler)
 	r.HandleFunc("/jobs", jobsHandler)
 	r.HandleFunc("/jobs/detail", jobsDetailHandler)
+
+	r.PathPrefix("/static/").Handler(
+		http.StripPrefix("/static/", http.FileServer(http.Dir("frontend_mock/static"))),
+	)
 	log.Println("server started at port: 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 
