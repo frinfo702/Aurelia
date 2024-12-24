@@ -8,9 +8,11 @@ import (
 	"os"
 
 	"Aurelia/internal/handlers"
+	"Aurelia/internal/middleware"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 )
 
 // TODO: db setup
@@ -32,6 +34,12 @@ func main() {
 	}
 	defer db.Close()
 
+	logger := logrus.New()
+
+	logger.Debug("This is a debug message")
+	logger.Info("This is an informational message")
+	logger.Warn("This is a warning message")
+	logger.Error("This is an error message")
 	// err = createTable(db) // for only testing in browse!! delete it after!!
 	// if err != nil {
 	// 	log.Fatal("failed to create table", err)
@@ -84,12 +92,11 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/", indexHandler)
 	r.HandleFunc("/jobs", jobsHandler)
 	r.HandleFunc("/jobs/detail", jobsDetailHandler)
+	r.Use(middleware.LoggingMiddleware)
 
 	r.PathPrefix("/static/").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("frontend_mock/static"))),
 	)
-	log.Println("server started at port: 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
 
 	return r
 }
