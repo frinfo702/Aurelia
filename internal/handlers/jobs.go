@@ -17,7 +17,7 @@ func NewJobHandler(db *sql.DB) *JobHandler {
 	return &JobHandler{db: db}
 }
 
-// GET api/jobs group by job type
+// GET api/jobs?type={} (e.g. fulltime)
 func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 	jobType := req.URL.Query().Get("type")
 	const query = `
