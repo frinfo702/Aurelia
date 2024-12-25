@@ -96,6 +96,9 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
+	// ここでグローバルDB接続を設定
+	handlers.SetDB(db)
+
 	code := m.Run()
 
 	db.Close()
