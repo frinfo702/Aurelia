@@ -39,7 +39,7 @@ func main() {
 
 func NewRouter(db *sql.DB) *mux.Router {
 
-	jobHandler := handlers.NewJobHandler(db)
+	jobHandler := handlers.NewJobHandler()
 
 	r := mux.NewRouter()
 

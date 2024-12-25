@@ -132,7 +132,7 @@ func TestGetJobsHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			handler := handlers.NewJobHandler(db)
+			handler := handlers.NewJobHandler()
 
 			req := httptest.NewRequest("GET", "/api/jobs?type="+tt.jobType, nil)
 			w := httptest.NewRecorder()
@@ -185,7 +185,7 @@ func TestGetJobDetailHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequest("GET", "/api/jobs/detail?id="+strconv.Itoa(tt.jobID), nil)
 			w := httptest.NewRecorder()
-			handler := handlers.NewJobHandler(db)
+			handler := handlers.NewJobHandler()
 			handler.GetJobDetailHandler(w, req)
 
 			if w.Code != tt.expectedStatus {

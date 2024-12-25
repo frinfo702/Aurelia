@@ -9,14 +9,6 @@ import (
 	"strconv"
 )
 
-type JobHandler struct {
-	db *sql.DB
-}
-
-func NewJobHandler(db *sql.DB) *JobHandler {
-	return &JobHandler{db: db}
-}
-
 // GET api/jobs group by job type
 func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 	jobType := req.URL.Query().Get("type")
