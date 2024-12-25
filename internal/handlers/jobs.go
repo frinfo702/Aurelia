@@ -60,7 +60,7 @@ func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Reque
 	jobID, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		log.Printf("Failed to parse id: %v", err)
-		http.Error(w, "Invalid job id", http.StatusNotFound)
+		http.Error(w, "Invalid job ID provided in path parameter", http.StatusNotFound)
 	}
 
 	// get the job which corresponds with {id}
