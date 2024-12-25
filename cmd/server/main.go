@@ -1,13 +1,12 @@
 package main
 
 import (
+	"Aurelia/internal/handlers"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-
-	"Aurelia/internal/handlers"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -47,7 +46,6 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("api/jobs/{id:[0-9]+}", jobHandler.GetJobDetailHandler).Methods(http.MethodGet)
 	r.HandleFunc("/jobs", jobs).Methods(http.MethodGet)
 	log.Println("server started at port: 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
 
 	return r
 }

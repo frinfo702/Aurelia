@@ -11,6 +11,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type JobHandler struct {
+	db *sql.DB
+}
+
+func NewJobHandler() *JobHandler {
+	return &JobHandler{db: globalDB}
+}
+
 // GET api/jobs group by job type
 func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 	jobType := req.URL.Query().Get("type")
