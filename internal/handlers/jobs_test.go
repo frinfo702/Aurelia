@@ -16,6 +16,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
@@ -186,7 +187,13 @@ func TestGetJobDetailHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest("GET", "/api/jobs/detail?id="+strconv.Itoa(tt.jobID), nil)
+			req := httptest.NewRequest("GET", "/api/jobs/"+strconv.Itoa(tt.jobID), nil)
+
+			// set path parameter
+			req = mux.SetURLVars(req, map[string]string{
+				"id": strconv.Itoa(tt.jobID),
+			})
+
 			w := httptest.NewRecorder()
 			handler := handlers.NewJobHandler()
 			handler.GetJobDetailHandler(w, req)

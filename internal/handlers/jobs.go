@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 // GET api/jobs group by job type
@@ -50,24 +52,15 @@ func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(jobList)
 }
 
-// other Handlers for job
+// GET /api/jobs/{id}
 func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Request) {
 	// parse {id} from url request body
-	queryMap := req.URL.Query()
 
-	var jobID int
-
-	if id, ok := queryMap["id"]; ok && len(id) > 0 {
-		var err error
-		jobID, err = strconv.Atoi(id[0])
-		if err != nil {
-			log.Printf("Query parameter might be invalid: %v", err)
-			http.Error(w, "Invalid job ID provided in query parameter", http.StatusBadRequest)
-			return
-		}
-	} else {
-		http.Error(w, "Missing job ID", http.StatusBadRequest)
-		return
+	vars := mux.Vars(req)
+	jobID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Printf("Failed to parse id: %v", err)
+		http.Error(w, "Invalid job ID provided in path parameter", http.StatusNotFound)
 	}
 
 	// get the job which corresponds with {id}
@@ -91,7 +84,7 @@ func (jH *JobHandler) GetJobDetailHandler(w http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	err := row.Scan(
+	err = row.Scan(
 		&job.CompanyID,
 		&job.HiringType,
 		&job.TechnologyType,
