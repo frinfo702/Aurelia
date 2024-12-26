@@ -9,6 +9,4 @@ func SetDB(db *sql.DB) {
 	globalDB = db
 }
 
-
-
 // 他のハンドラも同様に設定
