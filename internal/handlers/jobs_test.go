@@ -108,6 +108,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestGetJobsHandler(t *testing.T) {
+
 	tests := []struct {
 		name           string
 		jobType        string
@@ -136,7 +137,7 @@ func TestGetJobsHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			handler := handlers.NewJobHandler()
+			handler := handlers.NewJobHandler(db)
 
 			req := httptest.NewRequest("GET", "/api/jobs?type="+tt.jobType, nil)
 			w := httptest.NewRecorder()
@@ -195,7 +196,7 @@ func TestGetJobDetailHandler(t *testing.T) {
 			})
 
 			w := httptest.NewRecorder()
-			handler := handlers.NewJobHandler()
+			handler := handlers.NewJobHandler(db)
 			handler.GetJobDetailHandler(w, req)
 
 			if w.Code != tt.expectedStatus {

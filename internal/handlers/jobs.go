@@ -15,7 +15,7 @@ type JobHandler struct {
 	db *sql.DB
 }
 
-func NewJobHandler() *JobHandler {
+func NewJobHandler(db *sql.DB) *JobHandler {
 	return &JobHandler{db: globalDB}
 }
 
