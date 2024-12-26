@@ -57,7 +57,12 @@ func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json") // look into after. I don't understand
-	json.NewEncoder(w).Encode(jobList)
+	err = json.NewEncoder(w).Encode(jobList)
+	if err != nil {
+		log.Printf("error encoding response: %v", err)
+		http.Error(w, "failed to encode response", http.StatusInternalServerError)
+		return
+	}
 }
 
 // GET /api/jobs/{id}

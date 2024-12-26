@@ -103,7 +103,10 @@ func TestMain(m *testing.M) {
 	code := m.Run()
 
 	db.Close()
-	container.Terminate(ctx)
+	err = container.Terminate(ctx)
+	if err != nil {
+		panic(err)
+	}
 	os.Exit(code)
 }
 
