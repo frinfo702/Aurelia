@@ -16,7 +16,7 @@ type JobHandler struct {
 }
 
 func NewJobHandler(db *sql.DB) *JobHandler {
-	return &JobHandler{db: globalDB}
+	return &JobHandler{db: db}
 }
 
 // GET api/jobs group by job type

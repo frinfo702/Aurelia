@@ -6,8 +6,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// mockを作りたい
-
+// Create a mock repository
 type MockJobRepository struct {
 	mock.Mock
 }
