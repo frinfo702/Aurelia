@@ -1,21 +1,20 @@
 package main
 
 import (
+	"Aurelia/internal/domain/usecase"
 	"Aurelia/internal/handlers"
-	"Aurelia/internal/usecase"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"Aurelia/internal/infrastructure/db"
+	"Aurelia/internal/domain/repository/db"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
-// TODO: db setup
 var (
 	dbHost     = "db"
 	dbPort     = 5432

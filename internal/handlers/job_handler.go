@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"Aurelia/internal/usecase"
 	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
+
+	"Aurelia/internal/domain/usecase"
 
 	"github.com/gorilla/mux"
 )
