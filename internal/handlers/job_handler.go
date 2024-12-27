@@ -25,7 +25,10 @@ func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 		log.Printf("failed to fetch job list: %v", err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "failed to fetch job list"})
+		err := json.NewEncoder(w).Encode(map[string]string{"error": "failed to fetch job list"})
+		if err != nil {
+			log.Printf("error encoding response: %v", err)
+		}
 		return
 	}
 	err = json.NewEncoder(w).Encode(jobs)
@@ -33,7 +36,10 @@ func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 		log.Printf("error encoding response: %v", err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "failed to encode response"})
+		err := json.NewEncoder(w).Encode(map[string]string{"error": "failed to encode response"})
+		if err != nil {
+			log.Printf("error encoding response: %v", err)
+		}
 		return
 	}
 }
@@ -49,7 +55,10 @@ func (jH *JobHandler) GetJobByIDHandler(w http.ResponseWriter, req *http.Request
 		log.Printf("failed to parse job id: %v", err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid job	id"})
+		err := json.NewEncoder(w).Encode(map[string]string{"error": "invalid job	id"})
+		if err != nil {
+			log.Printf("error encoding response: %v", err)
+		}
 	}
 
 	jobs, err := jH.useCase.GetJobByID(jobID)
