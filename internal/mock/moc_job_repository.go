@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"Aurelia/internal/models"
+	"Aurelia/internal/domain/models"
 
 	"github.com/stretchr/testify/mock"
 )
