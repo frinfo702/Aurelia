@@ -2,14 +2,14 @@ package usecase
 
 import (
 	"Aurelia/internal/domain/models"
-	"Aurelia/internal/domain/repository"
+	"Aurelia/internal/domain/repository/db"
 )
 
 type JobUsecase struct {
-	repo repository.JobRepository
+	repo db.JobRepository
 }
 
-func NewJobUsecase(repo repository.JobRepository) *JobUsecase {
+func NewJobUsecase(repo db.JobRepository) *JobUsecase {
 	return &JobUsecase{repo: repo}
 }
 

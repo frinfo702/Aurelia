@@ -10,3 +10,5 @@ type Job struct {
 	Requirements   string `json:"requirements"`
 	UsedTechnology string `json:"used_technology"`
 }
+
+
