@@ -29,7 +29,7 @@ func TestGetJobsHandler(t *testing.T) {
 
 // TestGetJobByIDHandler
 func TestGetJobByIDHandler(t *testing.T) {
-	// リクエストとレスポンスの作成
+	// create a request and response recorder
 	req, rr := createRequest("GET", "/api/jobs/1", map[string]string{"id": "1"})
 
 	// ハンドラーの実行
