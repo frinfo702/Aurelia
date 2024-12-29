@@ -12,7 +12,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	// use go test container
-	
 )
 
 // TestGetJobsHandler
@@ -38,6 +37,14 @@ func TestGetJobsHandler(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody:   nil,
+		},
+		{
+			name: "empty",
+			mockSetup: func(mockRepo *testdata.MockJobRepository) {
+				mockRepo.On("FindAll").Return([]models.Job{}, nil)
+			},
+			expectedStatus: http.StatusOK,
+			expectedBody:   []models.Job{},
 		},
 	}
 	for _, tt := range testCase {
@@ -100,6 +107,14 @@ func TestGetJobByIDHandler(t *testing.T) {
 				mockRepo.On("FindByID", 1).Return(nil, errors.New("database error"))
 			},
 			expectedStatus: http.StatusInternalServerError,
+			expectedBody:   models.Job{},
+		},
+		{
+			name: "not found",
+			mockSetup: func(mockRepo *testdata.MockJobRepository) {
+				mockRepo.On("FindByID", 999).Return((*models.Job)(nil), errors.New("not found"))
+			},
+			expectedStatus: http.StatusNotFound,
 			expectedBody:   models.Job{},
 		},
 	}
