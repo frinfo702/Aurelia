@@ -40,7 +40,6 @@ func main() {
 
 	r.HandleFunc("/api/jobs", jobHandler.GetJobsHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/jobs/{id:[0-9]+}", jobHandler.GetJobByIDHandler).Methods(http.MethodGet)
-	r.HandleFunc("/api/jobs", jobs).Methods(http.MethodGet)
 
 	// frontend
 	r.HandleFunc("/", htmlHomeHandler)
@@ -55,10 +54,6 @@ func main() {
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(http.ListenAndServe(":8080", r))
 	}
-}
-
-func jobs(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprint(w, "Here is the place for jobs")
 }
 
 func htmlHomeHandler(w http.ResponseWriter, req *http.Request) {
