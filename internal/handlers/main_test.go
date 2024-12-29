@@ -16,6 +16,8 @@ var jobHandler *handlers.JobHandler
 func TestMain(m *testing.M) {
 	// initialize mock repository
 	mockRepo := new(testdata.MockJobRepository)
+
+	// テストデータに基づくモックの動作設定(個別テストファイルで上書きする場合も)
 	mockRepo.On("FindAll").Return(testdata.JobTestData, nil)
 	mockRepo.On("FindByID", 1).Return(&testdata.JobTestData[0], nil)
 
