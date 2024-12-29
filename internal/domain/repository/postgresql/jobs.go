@@ -1,4 +1,4 @@
-package db
+package postgresql
 
 import (
 	"Aurelia/internal/domain/models"
@@ -10,7 +10,7 @@ type PostgresJobRepository struct {
 	db *sql.DB
 }
 
-func NewPostgresJobRepository(db *sql.DB) *PostgresJobRepository {
+func NewJobRepository(db *sql.DB) *PostgresJobRepository {
 	return &PostgresJobRepository{db: db}
 }
 

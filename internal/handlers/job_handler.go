@@ -12,16 +12,16 @@ import (
 )
 
 type JobHandler struct {
-	useCase *usecase.JobUsecase
+	UseCase *usecase.JobUsecase
 }
 
 func NewJobHandler(useCase *usecase.JobUsecase) *JobHandler {
-	return &JobHandler{useCase: useCase}
+	return &JobHandler{UseCase: useCase}
 }
 
 // GET /api/jobs
 func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
-	jobs, err := jH.useCase.GetJobs()
+	jobs, err := jH.UseCase.GetJobs()
 	if err != nil {
 		log.Printf("failed to fetch job list: %v", err)
 		w.Header().Set("Content-Type", "application/json")
@@ -62,7 +62,7 @@ func (jH *JobHandler) GetJobByIDHandler(w http.ResponseWriter, req *http.Request
 		}
 	}
 
-	jobs, err := jH.useCase.GetJobByID(jobID)
+	jobs, err := jH.UseCase.GetJobByID(jobID)
 	if err != nil {
 		log.Printf("failed to fetch job list: %v", err)
 		w.Header().Set("Content-Type", "application/json")
