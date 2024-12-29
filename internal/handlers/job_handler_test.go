@@ -11,6 +11,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	// use go test container
+	
 )
 
 // TestGetJobsHandler
@@ -78,17 +80,46 @@ func TestGetJobsHandler(t *testing.T) {
 
 // TestGetJobByIDHandler
 func TestGetJobByIDHandler(t *testing.T) {
-	// create a request and response recorder
-	req, rr := createRequest("GET", "/api/jobs/1", map[string]string{"id": "1"})
+	testCase := []struct {
+		name           string
+		mockSetup      func(mockRepo *testdata.MockJobRepository)
+		expectedStatus int
+		expectedBody   models.Job
+	}{
+		{
+			name: "success",
+			mockSetup: func(mockRepo *testdata.MockJobRepository) {
+				mockRepo.On("FindByID", 1).Return(&testdata.JobTestData[0], nil)
+			},
+			expectedStatus: http.StatusOK,
+			expectedBody:   testdata.JobTestData[0],
+		},
+		{
+			name: "failed",
+			mockSetup: func(mockRepo *testdata.MockJobRepository) {
+				mockRepo.On("FindByID", 1).Return(nil, errors.New("database error"))
+			},
+			expectedStatus: http.StatusInternalServerError,
+			expectedBody:   models.Job{},
+		},
+	}
 
-	// ハンドラーの実行
-	jobHandler.GetJobByIDHandler(rr, req)
+	for _, tt := range testCase {
+		t.Run(tt.name, func(t *testing.T) {
 
-	// レスポンスの検証
-	assert.Equal(t, http.StatusOK, rr.Code)
+			// create a request and response recorder
+			req, rr := createRequest("GET", "/api/jobs/1", map[string]string{"id": "1"})
 
-	var job models.Job
-	err := json.NewDecoder(rr.Body).Decode(&job)
-	assert.NoError(t, err)
-	assert.Equal(t, testdata.JobTestData[0], job)
+			// ハンドラーの実行
+			jobHandler.GetJobByIDHandler(rr, req)
+
+			// レスポンスの検証
+			assert.Equal(t, http.StatusOK, rr.Code)
+
+			var job models.Job
+			err := json.NewDecoder(rr.Body).Decode(&job)
+			assert.NoError(t, err)
+			assert.Equal(t, testdata.JobTestData[0], job)
+		})
+	}
 }
