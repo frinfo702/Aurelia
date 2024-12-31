@@ -1,17 +1,13 @@
 package main
 
 import (
-	"Aurelia/internal/domain/usecase"
-	"Aurelia/internal/handlers"
+	"Aurelia/cmd/server/router"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"Aurelia/internal/domain/repository/db"
-
-	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
@@ -27,43 +23,18 @@ var (
 )
 
 func main() {
-	dbConn, err := sql.Open("postgres", psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal("failed to connect database", err)
+		return
 	}
-	defer dbConn.Close()
-	jobRepo := db.NewPostgresJobRepository(dbConn)
-	jobUseCase := usecase.NewJobUsecase(jobRepo)
-	jobHandler := handlers.NewJobHandler(jobUseCase)
+	defer db.Close()
 
-	r := mux.NewRouter()
-
-	r.HandleFunc("/api/jobs", jobHandler.GetJobsHandler).Methods(http.MethodGet)
-	r.HandleFunc("/api/jobs/{id:[0-9]+}", jobHandler.GetJobByIDHandler).Methods(http.MethodGet)
-
-	// frontend
-	r.HandleFunc("/", htmlHomeHandler)
-	r.HandleFunc("/jobs", htmlJobsHandler)
-	r.HandleFunc("/jobs/detail", htmlJobsDetailHandler)
-
-	r.PathPrefix("/static/").Handler(
-		http.StripPrefix("/static/", http.FileServer(http.Dir("frontend_mock/static"))),
-	)
+	r := router.NewRouter(db)
 
 	log.Println("Server is running on port 8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(http.ListenAndServe(":8080", r))
 	}
-}
 
-func htmlHomeHandler(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, "frontend_mock/index.html")
-}
-
-func htmlJobsHandler(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, "frontend_mock/get_jobs.html")
-}
-
-func htmlJobsDetailHandler(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, "frontend_mock/job_detail.html")
 }

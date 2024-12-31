@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS companies (
     total_raised VARCHAR(20),
     company_type VARCHAR(50),
     company_markets TEXT,
-    is_authorized BOOLEAN DEFAULT FALSE
+    application_status VARCHAR(20) DEFAULT 'pending' CHECK (
+        application_status IN ('pending', 'approved', 'rejected')
+    ),
 );
 CREATE TABLE IF NOT EXISTS jobs (
     job_id SERIAL PRIMARY KEY,

@@ -1,4 +1,4 @@
-package db
+package postgresql
 
 import (
 	"Aurelia/internal/domain/models"
@@ -10,7 +10,7 @@ type PostgresJobRepository struct {
 	db *sql.DB
 }
 
-func NewPostgresJobRepository(db *sql.DB) *PostgresJobRepository {
+func NewJobRepository(db *sql.DB) *PostgresJobRepository {
 	return &PostgresJobRepository{db: db}
 }
 
@@ -49,14 +49,9 @@ func (r *PostgresJobRepository) FindByID(id int) (*models.Job, error) {
 	return &job, nil
 }
 
-func (r *PostgresJobRepository) Save(job *models.Job) error {
-	query := "INSERT INTO jobs (company_id, hiring_type, technology_type, income_range, job_tag, used_technology) VALUES ($1, $2, $3, $4, $5, $6)"
-	_, err := r.db.Exec(query, job.CompanyID, job.HiringType, job.TechnologyType, job.IncomeRange, job.JobTag, job.UsedTechnology)
-	if err != nil {
-		log.Println("Error while inserting job", err)
-		return err
-	}
-	return nil
+func (r *PostgresJobRepository) Insert(job *models.Job) error {
+	query := "INSERT INTO jobs (company_id, hiring_type, technology_type, income_range, job_tag, used_technology) VALUES ($1, $2, $3, $4, $5, $6) RETURNING job_id"
+	return r.db.QueryRow(query, job.CompanyID, job.HiringType, job.TechnologyType, job.IncomeRange, job.JobTag, job.UsedTechnology).Scan(&job.JobID)
 }
 
 func (r *PostgresJobRepository) Delete(id int) error {
