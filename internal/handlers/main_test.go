@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/mock"
 )
 
 var jobHandler *handlers.JobHandler
@@ -20,6 +21,7 @@ func TestMain(m *testing.M) {
 	// テストデータに基づくモックの動作設定(個別テストファイルで上書きする場合も)
 	mockRepo.On("FindAll").Return(testdata.JobTestData, nil)
 	mockRepo.On("FindByID", 1).Return(&testdata.JobTestData[0], nil)
+	mockRepo.On("Insert", mock.Anything).Return(nil)
 
 	// inject mock repository to usecase
 	jobUseCase := usecase.NewJobUsecase(mockRepo)

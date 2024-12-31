@@ -23,7 +23,7 @@ func (m *MockJobRepository) FindByID(id int) (*models.Job, error) {
 }
 
 // Save
-func (m *MockJobRepository) Save(job *models.Job) error {
+func (m *MockJobRepository) Insert(job *models.Job) error {
 	args := m.Called(job)
 	return args.Error(0)
 }
