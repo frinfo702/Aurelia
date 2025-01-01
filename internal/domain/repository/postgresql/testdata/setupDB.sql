@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS companies (
     company_markets TEXT,
     application_status VARCHAR(20) DEFAULT 'pending' CHECK (
         application_status IN ('pending', 'approved', 'rejected')
-    ),
+    )
 );
 CREATE TABLE IF NOT EXISTS jobs (
     job_id SERIAL PRIMARY KEY,
