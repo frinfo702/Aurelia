@@ -16,8 +16,6 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-var tdb *sql.DB
-
 func TestFindAll(t *testing.T) {
 	ctx := context.Background()
 	pgContainer, err := postgres.Run(ctx,
