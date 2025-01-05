@@ -3,28 +3,42 @@ package usecase
 import (
 	"Aurelia/internal/domain/models"
 	"Aurelia/internal/domain/repository/postgresql"
+	"errors"
 )
 
-type JobUsecase struct {
-	Repo postgresql.JobRepository
+type jobUsecase struct {
+	jobRepo postgresql.JobRepository
 }
 
-func NewJobUsecase(repo postgresql.JobRepository) *JobUsecase {
-	return &JobUsecase{Repo: repo}
+func NewJobUsecase(r postgresql.JobRepository) JobUsecase {
+	return &jobUsecase{jobRepo: r}
 }
 
-func (uc *JobUsecase) GetJobs() ([]models.Job, error) {
-	return uc.Repo.FindAll()
+// GetJobs は全求人取得
+func (uc *jobUsecase) GetJobs() ([]models.Job, error) {
+	return uc.jobRepo.FindAll()
 }
 
-func (uc *JobUsecase) GetJobByID(id int) (*models.Job, error) {
-	return uc.Repo.FindByID(id)
+// GetJobByID はID指定で求人を取得
+func (uc *jobUsecase) GetJobByID(id int) (*models.Job, error) {
+	return uc.jobRepo.FindByID(id)
 }
 
-func (uc *JobUsecase) CreateJob(job *models.Job) error {
-	return uc.Repo.Insert(job)
+// CreateJob は新規求人を作成。バリデーション例を追加してみた
+func (uc *jobUsecase) CreateJob(job *models.Job) error {
+	if job.IncomeRange < 0 {
+		return errors.New("income_range must be >= 0")
+	}
+	if job.HiringType == "" {
+		return errors.New("hiring_type must not be empty")
+	}
+	// ほかのバリデーション…
+
+	job.ApplicationStatus = "pending" // 例: 新規求人はpendingでスタート
+	return uc.jobRepo.Insert(job)
 }
 
-func (uc *JobUsecase) DeleteJob(id int) error {
-	return uc.Repo.Delete(id)
+// DeleteJob はID指定で求人を削除
+func (uc *jobUsecase) DeleteJob(id int) error {
+	return uc.jobRepo.Delete(id)
 }

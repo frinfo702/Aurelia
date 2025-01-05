@@ -54,8 +54,8 @@ func TestGetJobsHandler(t *testing.T) {
 			tt.mockSetup(mockRepo)
 
 			// initialize usecase and handler
-			jobUseCase := usecase.NewJobUsecase(mockRepo)
-			jobHandler := handlers.NewJobHandler(jobUseCase)
+			jobUsecase := usecase.NewJobUsecase(mockRepo)
+			jobHandler := handlers.NewJobHandler(jobUsecase)
 
 			// create a request and response recorder
 			req, rec := createRequest("GET", "/api/jobs", nil)
