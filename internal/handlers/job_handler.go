@@ -13,16 +13,16 @@ import (
 )
 
 type JobHandler struct {
-	UseCase *usecase.JobUsecase
+	jobUC usecase.JobUsecase
 }
 
-func NewJobHandler(useCase *usecase.JobUsecase) *JobHandler {
-	return &JobHandler{UseCase: useCase}
+func NewJobHandler(jobUC usecase.JobUsecase) *JobHandler {
+	return &JobHandler{jobUC: jobUC}
 }
 
 // GET /api/jobs
 func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
-	jobs, err := jH.UseCase.GetJobs()
+	jobs, err := jH.jobUC.GetJobs()
 	if err != nil {
 		log.Printf("failed to fetch job list: %v", err)
 		w.Header().Set("Content-Type", "application/json")
@@ -63,7 +63,7 @@ func (jH *JobHandler) GetJobByIDHandler(w http.ResponseWriter, req *http.Request
 		}
 	}
 
-	jobs, err := jH.UseCase.GetJobByID(jobID)
+	jobs, err := jH.jobUC.GetJobByID(jobID)
 	if err != nil {
 		log.Printf("failed to fetch job list: %v", err)
 		w.Header().Set("Content-Type", "application/json")
@@ -106,7 +106,7 @@ func (jH *JobHandler) CreateJobHandler(w http.ResponseWriter, req *http.Request)
 	}
 
 	// create job
-	err = jH.UseCase.CreateJob(job)
+	err = jH.jobUC.CreateJob(job)
 	if err != nil {
 		log.Printf("failed to create job: %v", err)
 		w.Header().Set("Content-Type", "application/json")
@@ -118,7 +118,7 @@ func (jH *JobHandler) CreateJobHandler(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	insertedJobID, err := jH.UseCase.GetJobByID(job.JobID)
+	insertedJobID, err := jH.jobUC.GetJobByID(job.JobID)
 	if err != nil {
 		log.Printf("failed to fetch job: %v", err)
 		w.Header().Set("Content-Type", "application/json")
