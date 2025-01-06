@@ -19,6 +19,7 @@ func NewRouter(db *sql.DB) *mux.Router {
 
 	r.HandleFunc("/api/jobs", jobHandler.GetJobsHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/jobs/{id:[0-9]+}", jobHandler.GetJobByIDHandler).Methods(http.MethodGet)
+	r.HandleFunc("/api/jobs", jobHandler.CreateJobHandler).Methods(http.MethodPost)
 
 	// frontend
 	r.HandleFunc("/", htmlHomeHandler)
