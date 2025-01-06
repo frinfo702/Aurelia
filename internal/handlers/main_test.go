@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+// To  avoid error "not used"
 var jobHandler *handlers.JobHandler
 
 func TestMain(m *testing.M) {

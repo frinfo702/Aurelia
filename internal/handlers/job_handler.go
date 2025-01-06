@@ -46,8 +46,6 @@ func (jH *JobHandler) GetJobsHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// GET api/jobs group by job type
-
 // GET /api/jobs/{id}
 func (jH *JobHandler) GetJobByIDHandler(w http.ResponseWriter, req *http.Request) {
 	// parse {id} from url request body
@@ -89,7 +87,6 @@ func (jH *JobHandler) GetJobByIDHandler(w http.ResponseWriter, req *http.Request
 }
 
 // POST /api/jobs
-// TODO: implement test
 func (jH *JobHandler) CreateJobHandler(w http.ResponseWriter, req *http.Request) {
 	// parse request json body to job struct
 	var job *models.Job
