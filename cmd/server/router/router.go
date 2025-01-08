@@ -33,14 +33,17 @@ func NewRouter(db *sql.DB) *mux.Router {
 	return r
 }
 
+// /
 func htmlHomeHandler(w http.ResponseWriter, req *http.Request) {
 	http.ServeFile(w, req, "frontend_mock/index.html")
 }
 
+// /jobs
 func htmlJobsHandler(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, "frontend_mock/get_jobs.html")
+	http.ServeFile(w, req, "frontend_mock/jobs.html")
 }
 
+// /jobs/{id}
 func htmlJobsDetailHandler(w http.ResponseWriter, req *http.Request) {
 	http.ServeFile(w, req, "frontend_mock/job_detail.html")
 }
