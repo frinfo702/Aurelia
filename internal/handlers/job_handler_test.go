@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	// use go test container
 )
 
@@ -135,6 +136,45 @@ func TestGetJobByIDHandler(t *testing.T) {
 			err := json.NewDecoder(rr.Body).Decode(&job)
 			assert.NoError(t, err)
 			assert.Equal(t, testdata.JobTestData[0], job)
+		})
+	}
+}
+
+func TestCreateJobHandler(t *testing.T) {
+	testCase := []struct {
+		name           string
+		mockSetup      func(mockRepo *testdata.MockJobRepository)
+		expectedStatus int
+		expectedBody   map[string]string
+	}{
+		{
+			name: "success",
+			mockSetup: func(mockRepo *testdata.MockJobRepository) {
+				mockRepo.On("Insert", mock.Anything).Return(nil)
+			},
+			expectedStatus: http.StatusCreated,
+			expectedBody:   map[string]string{"message": "job created"},
+		},
+	}
+
+	for _, tt := range testCase {
+		t.Run(tt.name, func(t *testing.T) {
+			
+			// create request
+			req, rr := createRequest("POST", "/api/jobs", nil)
+
+			// execute handler
+			jobHandler.CreateJobHandler(rr, req)
+
+			// check response status code
+			assert.Equal(t, tt.expectedStatus, rr.Code)
+
+			// assert response body
+			var resp map[string]string
+			err := json.NewDecoder(rr.Body).Decode(&resp)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expectedBody, resp)
+
 		})
 	}
 }
