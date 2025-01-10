@@ -159,7 +159,7 @@ func TestCreateJobHandler(t *testing.T) {
 
 	for _, tt := range testCase {
 		t.Run(tt.name, func(t *testing.T) {
-			
+
 			// create request
 			req, rr := createRequest("POST", "/api/jobs", nil)
 
