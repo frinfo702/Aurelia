@@ -25,6 +25,7 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/", htmlHomeHandler)
 	r.HandleFunc("/jobs", htmlJobsHandler)
 	r.HandleFunc("/jobs/{id:[0-9]+}", htmlJobsDetailHandler).Methods(http.MethodGet)
+	r.HandleFunc("/apply", htmlApplyJobHandler).Methods(http.MethodGet)
 
 	r.PathPrefix("/static/").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("frontend_mock/static"))),
@@ -46,4 +47,9 @@ func htmlJobsHandler(w http.ResponseWriter, req *http.Request) {
 // /jobs/{id:[0-9]+}
 func htmlJobsDetailHandler(w http.ResponseWriter, req *http.Request) {
 	http.ServeFile(w, req, "frontend_mock/job_detail.html")
+}
+
+// /apply
+func htmlApplyJobHandler(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, "frontend_mock/apply_job.html")
 }
