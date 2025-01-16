@@ -1,0 +1,4 @@
+BEGIN;
+ALTER TABLE jobs
+ADD COLUMN test_column INT;
+COMMIT;
