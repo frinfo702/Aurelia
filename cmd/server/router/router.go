@@ -27,7 +27,7 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/api/jobs", jobHandler.CreateJobHandler).Methods(http.MethodPost)
 
 	// authorization
-	r.HandleFunc("/api/auth/signup", authHandler.SignUpHander).Methods(http.MethodPost)
+	r.HandleFunc("/api/auth/signup", authHandler.SignUpHandler).Methods(http.MethodPost)
 	r.HandleFunc("/api/auth/login", authHandler.LoginHandler).Methods(http.MethodPost)
 
 	sub := r.PathPrefix("api/comapanies/me").Subrouter()

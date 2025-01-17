@@ -17,17 +17,17 @@ func NewAuthHandler(uc usecase.AuthUsecase) *AuthHandler {
 }
 
 // POST api/auth/signup
-func (h *AuthHandler) SignUpHander(w http.ResponseWriter, req *http.Request) {
+func (h *AuthHandler) SignUpHandler(w http.ResponseWriter, req *http.Request) {
 	var user models.User
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		_ = json.NewEncoder(w).Encode(map[string]string{"error": "invalid reques"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": "invalid request"})
 		return
 	}
 	if user.UserPassword == "" || user.UserEmail == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		_ = json.NewEncoder(w).Encode(map[string]string{"error": "invalid reques"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": "invalid request"})
 		return
 	}
 
