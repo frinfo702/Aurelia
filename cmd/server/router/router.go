@@ -1,6 +1,7 @@
 package router
 
 import (
+	"Aurelia/cmd/server/router/middleware"
 	"Aurelia/internal/domain/repository/postgresql"
 	"Aurelia/internal/domain/usecase"
 	"Aurelia/internal/handlers"
@@ -15,11 +16,23 @@ func NewRouter(db *sql.DB) *mux.Router {
 	useCase := usecase.NewJobUsecase(jobRepo)
 	jobHandler := handlers.NewJobHandler(useCase)
 
+	userRepo := postgresql.NewUserRepository(db)
+	authUC := usecase.NewAuthUsecase(userRepo)
+	authHandler := handlers.NewAuthHandler(authUC)
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/api/jobs", jobHandler.GetJobsHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/jobs/{id:[0-9]+}", jobHandler.GetJobByIDHandler).Methods(http.MethodGet)
 	r.HandleFunc("/api/jobs", jobHandler.CreateJobHandler).Methods(http.MethodPost)
+
+	// authorization
+	r.HandleFunc("/api/auth/signup", authHandler.SignUpHander).Methods(http.MethodPost)
+	r.HandleFunc("/api/auth/login", authHandler.LoginHandler).Methods(http.MethodPost)
+
+	sub := r.PathPrefix("api/comapanies/me").Subrouter()
+	sub.Use(middleware.ValidateJWTMiddleware)
+	// sub.HandleFunc("/jobs", CompanyJobsHandler).Methods(http.MethodGet)
 
 	// frontend
 	r.HandleFunc("/", htmlHomeHandler)
