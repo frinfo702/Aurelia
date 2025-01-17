@@ -17,7 +17,7 @@ func ValidateJWTMiddleware(next http.Handler) http.Handler {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(map[string]string{"error": "missing token"})
+			_ = json.NewEncoder(w).Encode(map[string]string{"error": "missing token"})
 			return
 		}
 		// Expecting: Authorization: Bearer xxxxx
@@ -34,7 +34,7 @@ func ValidateJWTMiddleware(next http.Handler) http.Handler {
 
 		if err != nil || !token.Valid {
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(map[string]string{"error": "invalid token"})
+			_ = json.NewEncoder(w).Encode(map[string]string{"error": "invalid token"})
 			return
 		}
 
@@ -44,7 +44,7 @@ func ValidateJWTMiddleware(next http.Handler) http.Handler {
 				// expが現在時刻より前なら期限切れ
 				if time.Now().Unix() > int64(exp) {
 					w.WriteHeader(http.StatusUnauthorized)
-					json.NewEncoder(w).Encode(map[string]string{"error": "token expired"})
+					_ = json.NewEncoder(w).Encode(map[string]string{"error": "token expired"})
 					return
 				}
 			}
@@ -52,7 +52,7 @@ func ValidateJWTMiddleware(next http.Handler) http.Handler {
 			// context.WithValue()でセットするなど
 		} else {
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(map[string]string{"error": "invalid token claims"})
+			_ = json.NewEncoder(w).Encode(map[string]string{"error": "invalid token claims"})
 			return
 		}
 
