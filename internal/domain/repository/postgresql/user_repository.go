@@ -3,7 +3,10 @@ package postgresql
 import (
 	"Aurelia/internal/domain/models"
 	"database/sql"
+	"errors"
 	"log"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type PostgresUserRepository struct {
@@ -16,7 +19,7 @@ func NewUserRepository(db *sql.DB) *PostgresUserRepository {
 
 func (r *PostgresUserRepository) FindAll() ([]models.User, error) {
 	// query to database
-	query := "SELECT user_id, user_name, user_address, user_mail, user_password FROM users"
+	query := "SELECT user_id, user_name, user_address, user_email, password_hash FROM users"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		log.Println()
@@ -27,7 +30,13 @@ func (r *PostgresUserRepository) FindAll() ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.UserID, &user.UserName, &user.UserAddress, &user.UserEmail, &user.UserPassword)
+		err := rows.Scan(
+			&user.UserID,
+			&user.UserName,
+			&user.UserAddress,
+			&user.UserEmail,
+			&user.UserPassword, // password_hash
+		)
 		if err != nil {
 			log.Println("Error while scannig rows", err)
 			return nil, err
@@ -39,25 +48,55 @@ func (r *PostgresUserRepository) FindAll() ([]models.User, error) {
 	return users, nil
 }
 
-func (r *PostgresUserRepository) FindByEmail(email string) (models.User, error) {
+func (r *PostgresUserRepository) FindByEmail(email string) (*models.User, error) {
 	// query to database
-	query := "SELECT user_id, user_name, user_address, user_mail, user_password FROM users WHERE user_mail = $1"
+	query := `SELECT user_id, user_name, user_address, email, password_hash 
+			  FROM users 
+			  WHERE email = $1`
 	// fetch
 
 	var user models.User
 	row := r.db.QueryRow(query, email)
-	err := row.Scan(&user.UserID, &user.UserName, &user.UserAddress, &user.UserEmail, &user.UserPassword)
+	err := row.Scan(
+		&user.UserID,
+		&user.UserName,
+		&user.UserAddress,
+		&user.UserEmail,
+		&user.UserPassword,
+	)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows){
+			// 行が無い => ユーザーは存在しない => (nil, nil)を返す
+            return nil, nil
+		}
 		log.Println("error while scannig row: ", err)
-		return models.User{}, err
+		return &models.User{}, err
 	}
-	return user, nil
+	return &user, nil
 }
 
-func (r *PostgresUserRepository) Insert(user models.User) error {
+func (r *PostgresUserRepository) Insert(user *models.User) error {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(user.UserPassword), bcrypt.DefaultCost)
+	if err != nil {
+		log.Println("error while crypting user's password", err)
+	}
+
+	query := `INSERT INTO users (user_name, user_address, email, password_hash)
+              VALUES ($1, $2, $3, $4) RETURNING user_id`
+
+	err = r.db.QueryRow(query,
+		user.UserName,
+		user.UserAddress,
+		user.UserEmail,
+		string(hashed),
+	).Scan(&user.UserID)
+	if err != nil {
+		log.Println("error while inserting user data", err)
+	}
 	return nil
 }
 
 func (r *PostgresUserRepository) CheckPassword(hash, password string) bool {
-	return false
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return nil == err
 }
