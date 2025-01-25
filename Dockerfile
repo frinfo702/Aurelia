@@ -1,5 +1,5 @@
 # ベースイメージ
-FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS builder
+FROM --platform=linux/amd64 golang:1.22-alpine AS builder
 
 # 作業ディレクトリの作成
 WORKDIR /app
