@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerWave - Find Your Next Role</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Julius+Sans+One&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* 色味をピンク～パープル系に刷新 */
+            --primary: #9C27B0;
+            /* メインのパープル */
+            --secondary: #E91E63;
+            /* 差し色のピンク */
+            --accent: #F48FB1;
+            /* 補助的な薄ピンク */
+            --accent-light: #FCE4EC;
+            /* さらに薄いピンク */
+            --background: #FFFFFF;
+            /* ベースは白 */
+            --surface: #F8F3F9;
+            /* コンテンツ領域の背景(ほんのりピンク寄り) */
+            --text: #2F2F2F;
+            /* メインの文字色は濃い目のグレー */
+            --text-secondary: #5C5C5C;
+            /* サブの文字色 */
+            --border: #E1BEE7;
+            /* やや淡いパープル系 */
+            --highlight: #F06292;
+            /* ボタンHoverなどの強調色 */
+        }
+
+        /* ベースのリセットとフォント設定 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            /* 背景に淡い円形グラデーションを重ねて、添付画像のようなイメージ */
+            background-image: radial-gradient(at 30% 40%, rgba(236, 64, 122, 0.15), transparent 60%),
+                radial-gradient(at 70% 60%, rgba(156, 39, 176, 0.15), transparent 60%);
+        }
+
+        /* デコレーション用の要素は活かすが、見た目を変更 */
+        .decorative-border {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .decorative-border::before,
+        .decorative-border::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            /* シンプルなピンク～パープルグラデの帯に変更 */
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            opacity: 0.3;
+        }
+
+        .decorative-border::before {
+            top: 0;
+        }
+
+        .decorative-border::after {
+            bottom: 0;
+            transform: rotate(180deg);
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 200px;
+            background: var(--accent);
+            opacity: 0.7;
+        }
+
+        .scroll-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--secondary);
+            transition: height 0.1s;
+            height: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ナビゲーション */
+        .nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border);
+            padding: 16px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 28px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            color: transparent;
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .logo::after {
+            content: '★';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--secondary), transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        /* 後ろにさりげなくパープルやピンクの円を追加 */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle, rgba(236, 64, 122, 0.2), transparent 50%);
+            transform: rotate(25deg);
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            letter-spacing: 0.2em;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            line-height: 1.2;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title::before,
+        .hero-title::after {
+            content: '✧';
+            position: absolute;
+            color: var(--secondary);
+            font-size: 36px;
+        }
+
+        .hero-title::before {
+            left: -50px;
+            top: 0;
+        }
+
+        .hero-title::after {
+            right: -50px;
+            bottom: 0;
+        }
+
+        .wave-divider {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            margin-bottom: -5px;
+            /* セクションのつなぎ目で隙間が空かないよう微調整 */
+            overflow: hidden;
+        }
+
+        .wave-divider svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ボタン */
+        .btn {
+            padding: 12px 32px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn.btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border: none;
+        }
+
+        .btn.btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            box-shadow: 0 8px 16px rgba(156, 39, 176, 0.2);
+        }
+
+        /* 会社一覧セクション */
+        .company-section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 48px;
+            margin-bottom: 80px;
+            text-align: center;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .company-card {
+            background: var(--surface);
+            padding: 40px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .company-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* かすかにパープル模様を散らす */
+            background-image: radial-gradient(rgba(156, 39, 176, 0.1) 2px, transparent 2px);
+            background-size: 20px 20px;
+            opacity: 0.1;
+        }
+
+        .company-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            margin-bottom: 24px;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        .company-name {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .company-info {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tag {
+            background: rgba(156, 39, 176, 0.08);
+            color: var(--secondary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 求人リスト */
+        .job-list {
+            padding: 120px 0;
+            background: linear-gradient(rgba(248, 243, 249, 0.95),
+                    rgba(248, 243, 249, 0.95));
+        }
+
+        .job-card {
+            background: var(--surface);
+            padding: 40px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-card:hover {
+            transform: translateX(10px);
+            border-color: var(--secondary);
+        }
+
+        .job-title {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+        }
+
+        /* フッター */
+        .footer {
+            background: var(--primary);
+            color: #fff;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* 淡い星型模様を重ねる */
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+            background-size: 25px 25px;
+            opacity: 0.1;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 80px;
+        }
+
+        .footer-title {
+            font-size: 24px;
+            margin-bottom: 24px;
+            color: #fff;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .footer-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-light);
+        }
+
+        /* スクロールトップボタン */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .company-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-subtitle {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .company-card,
+            .job-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="decorative-border"></div>
+    <div class="scroll-indicator">
+        <div class="scroll-progress"></div>
+    </div>
+    <nav class="nav">
+        <div class="container nav-content">
+            <div class="logo">CareerWave</div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="#">About</a>
+                <a href="/jobs">Jobs</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-subtitle">Find Your Next Role</div>
+            <h1 class="hero-title">CareerWave</h1>
+            <button class="btn btn-primary">Get Started</button>
+        </div>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1440 150" preserveAspectRatio="none">
+                <path fill="#FFFFFF" d="M0,60 C360,180 1080,0 1440,60 L1440,0 L0,0 Z">
+                </path>
+            </svg>
+        </div>
+    </section>
+
+    <section class="company-section">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fa-solid fa-gem" style="margin-right:8px;"></i>
+                Top Companies
+            </h2>
+
+            <div class="company-grid">
+                <div class="company-card fade-in-up">
+                    <div class="company-logo"></div>
+                    <div class="company-name">Company A</div>
+                    <div class="company-info">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    </div>
+                    <div class="tags">
+                        <div class="tag">Tag 1</div>
+                        <div class="tag">Tag 2</div>
+                        <div class="tag">Tag 3</div>
+                    </div>
+                </div>
+                <div class="company-card fade-in-up">
+                    <div class="company-logo"></div>
+                    <div class="company-name">Company B</div>
+                    <div class="company-info">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    </div>
+                    <div class="tags">
+                        <div class="tag">Tag 1</div>
+                        <div class="tag">Tag 2</div>
+                        <div class="tag">Tag 3</div>
+                    </div>
+                </div>
+                <div class="company-card fade-in-up">
+                    <div class="company-logo"></div>
+                    <div class="company-name">Company C</div>
+                    <div class="company-info">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    </div>
+                    <div class="tags">
+                        <div class="tag">Tag 1</div>
+                        <div class="tag">Tag 2</div>
+                        <div class="tag">Tag 3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="job-list">
+        <div class="container">
+            <h2 class="section-title">Job Openings</h2>
+            <div class="job-card">
+                <div class="job-title">Job Title A</div>
+                <div class="job-meta">
+                    <div>Location: City A</div>
+                    <div>Type: Full-time</div>
+                </div>
+                <button class="btn">Apply Now</button>
+            </div>
+            <div class="job-card">
+                <div class="job-title">Job Title B</div>
+                <div class="job-meta">
+                    <div>Location: City B</div>
+                    <div>Type: Part-time</div>
+                </div>
+                <button class="btn">Apply Now</button>
+            </div>
+            <div class="job-card">
+                <div class="job-title">Job Title C</div>
+                <div class="job-meta">
+                    <div>Location: City C</div>
+                    <div>Type: Remote</div>
+                </div>
+                <button class="btn">Apply Now</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <h3 class="footer-title">CareerWave</h3>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
+                    Praesent libero. Sed cursus ante dapibus diam.
+                </p>
+            </div>
+            <div>
+                <h3 class="footer-title">Company</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="footer-title">Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="footer-title">Contact</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-to-top">↑</button>
+    <script>
+        /* スクロールトップやスクロールインジケータ制御 */
+        window.addEventListener('scroll', () => {
+            const scrollBtn = document.querySelector('.scroll-to-top');
+            const scrollProgress = document.querySelector('.scroll-progress');
+            const scrollTop = window.scrollY;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+
+            // スクロール進捗バーの高さを可視化
+            scrollProgress.style.height = scrollPercent + '%';
+
+            if (window.scrollY > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+
+        document.querySelector('.scroll-to-top').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        const fadeElems = document.querySelectorAll('.fade-in-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElems.forEach(el => observer.observe(el));
+    </script>
+</body>
+
+</html>
