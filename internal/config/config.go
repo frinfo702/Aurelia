@@ -39,7 +39,7 @@ func InitConfig() *Config {
 
 func (c *Config) GetDBConnString() string {
 	// PostgreSQL例
-	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require",
 		c.DBHost, c.DBPort, c.DBUser, c.DBPass, c.DBName,
 	)
 }
