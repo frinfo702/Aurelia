@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search and Add Component</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f6f1fc; /* Light purple background */
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 20px; /* Space between icons */
+    }
+
+    .icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: #e6dbff; /* Light purple for the button */
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .icon:hover {
+      background-color: #d2c4ff; /* Slightly darker on hover */
+    }
+
+    .icon svg {
+      width: 20px;
+      height: 20px;
+      fill: #5e5e5e; /* Dark gray for the icons */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Search Icon -->
+    <div class="icon" id="search-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M10 2a8 8 0 105.29 14.71l4 4a1 1 0 001.42-1.42l-4-4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z" />
+      </svg>
+    </div>
+
+    <!-- Add Icon -->
+    <div class="icon" id="add-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z" />
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

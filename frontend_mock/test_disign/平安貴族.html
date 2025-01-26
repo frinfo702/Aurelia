@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>御台所方求人絵巻 - 雅なる仕事探求の道</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #8C4841;
+            /* 古代紅 */
+            --secondary: #A8497A;
+            /* 古代紫 */
+            --accent: #B98C46;
+            /* 金色 */
+            --accent-light: #E6B422;
+            /* 山吹色 */
+            --background: #F4E9D8;
+            /* 象牙色 */
+            --surface: #FFFBF2;
+            /* 胡粉色 */
+            --text: #2B2B2B;
+            /* 烏羽色 */
+            --text-secondary: #726250;
+            /* 丁子色 */
+            --border: #B4A582;
+            /* 白茶 */
+            --highlight: #E83015;
+            /* 朱色 */
+            --success: #4A593D;
+            /* 深緑 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Shippori Mincho', serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            background-image:
+                linear-gradient(45deg, var(--border) 1px, transparent 1px),
+                linear-gradient(-45deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-opacity: 0.1;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 200px;
+            background: var(--border);
+        }
+
+        .scroll-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--primary);
+            transition: height 0.1s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* 装飾的な要素 */
+        .decorative-border {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .decorative-border::before,
+        .decorative-border::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L40,0 L20,20 Z' fill='%23B98C46' fill-opacity='0.1'/%3E%3C/svg%3E");
+        }
+
+        .decorative-border::before {
+            top: 0;
+        }
+
+        .decorative-border::after {
+            bottom: 0;
+            transform: rotate(180deg);
+        }
+
+        .nav {
+            background: rgba(244, 233, 216, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border);
+            padding: 16px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 28px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            color: transparent;
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .logo::after {
+            content: '※';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 20%, var(--accent) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--secondary) 0%, transparent 50%);
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            letter-spacing: 0.2em;
+        }
+
+        .hero-title {
+            font-size: 72px;
+            line-height: 1.2;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title::before,
+        .hero-title::after {
+            content: '※';
+            position: absolute;
+            color: var(--accent);
+            font-size: 36px;
+        }
+
+        .hero-title::before {
+            left: -50px;
+            top: 0;
+        }
+
+        .hero-title::after {
+            right: -50px;
+            bottom: 0;
+        }
+
+        .featured-section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 48px;
+            margin-bottom: 80px;
+            text-align: center;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .featured-card {
+            background: var(--surface);
+            padding: 40px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c-3 3-6 6-9 9M30 30c3-3 6-6 9-9M30 30c-3-3-6-6-9-9M30 30c3 3 6 6 9 9' stroke='%23B98C46' stroke-width='0.2' fill='none'/%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            margin-bottom: 24px;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+        }
+
+        .featured-title {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .featured-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .stats-section {
+            padding: 120px 0;
+            background: linear-gradient(rgba(244, 233, 216, 0.9), rgba(244, 233, 216, 0.9)),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50c-5 5-10 10-15 15M50 50c5-5 10-10 15-15M50 50c-5-5-10-10-15-15M50 50c5 5 10 10 15 15' stroke='%23B98C46' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .positions-section {
+            padding: 120px 0;
+        }
+
+        .position-card {
+            background: var(--surface);
+            padding: 40px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .position-card:hover {
+            transform: translateX(10px);
+            border-color: var(--accent);
+        }
+
+        .position-title {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .position-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+        }
+
+        .position-description {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border-radius: 0;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(140, 72, 65, 0.2);
+        }
+
+        .footer {
+            background: var(--text);
+            color: var(--surface);
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c-3 3-6 6-9 9M30 30c3-3 6-6 9-9M30 30c-3-3-6-6-9-9M30 30c3 3 6 6 9 9' stroke='%23FFFFFF' stroke-width='0.2' fill='none'/%3E%3C/svg%3E");
+            opacity: 0.05;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 80px;
+        }
+
+        .footer-title {
+            font-size: 24px;
+            margin-bottom: 24px;
+            color: var(--surface);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .footer-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: var(--surface);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-light);
+        }
+
+        .footer-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes floatAnimation {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="decorative-border"></div>
+    <div class="scroll-indicator">
+        <div class="scroll-progress"></div>
+    </div>
+
+    <nav class="nav">
+        <div class="container nav-content">
+            <div class="logo">御台所方求人絵巻</div>
+            <div class="nav-links">
+                <a href="#featured">勅撰の御仕事</a>
+                <a href="#positions">御仕事一覧</a>
+                <a href="#stats">御実績</a>
+                <a href="#contact">御問合せ</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-subtitle">千三百余の雅なる御仕事</div>
+            <h1 class="hero-title">次なる芸の道を求めむ</h1>
+            <button class="btn btn-primary">御仕事を探す</button>
+        </div>
+    </section>
+
+    <section id="featured" class="featured-section">
+        <div class="container">
+            <h2 class="section-title">勅撰の御仕事</h2>
+            <div class="featured-grid">
+                <div class="featured-card">
+                    <div class="featured-icon">筆</div>
+                    <h3 class="featured-title">歌物語師</h3>
+                    <p class="featured-description">和歌を詠み、物語を紡ぎ、言の葉の美しさを極める道。月に百五十貫の禄あり。</p>
+                    <button class="btn">詳細を見る</button>
+                </div>
+                <div class="featured-card">
+                    <div class="featured-icon">琴</div>
+                    <h3 class="featured-title">雅楽師</h3>
+                    <p class="featured-description">宮中の雅楽を司り、調べの美を極める道。月に百二十貫の禄あり。</p>
+                    <button class="btn">詳細を見る</button>
+                </div>
+                <div class="featured-card">
+                    <div class="featured-icon">絵</div>
+                    <h3 class="featured-title">絵師</h3>
+                    <p class="featured-description">絵巻を描き、色彩の美を極める道。月に百三十貫の禄あり。</p>
+                    <button class="btn">詳細を見る</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats" class="stats-section">
+        <div class="container">
+            <h2 class="section-title">御実績</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">一万三千</div>
+                    <div class="stat-label">採用実績</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">九十八</div>
+                    <div class="stat-label">貴族様ご紹介数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">五百余</div>
+                    <div class="stat-label">現在の御仕事数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">九十九</div>
+                    <div class="stat-label">ご満足度</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="positions" class="positions-section">
+        <div class="container">
+            <h2 class="section-title">注目の御仕事</h2>
+            <div class="position-card">
+                <h3 class="position-title">源氏物語写本師</h3>
+                <div class="position-meta">
+                    <span>六条院 • 月百二十貫 • 昨日の記</span>
+                </div>
+                <p class="position-description">源氏物語の写本を美しき筆にて書き写す。心静かに文字を紡ぎ、物語の世界を伝える者を求む。</p>
+                <button class="btn btn-primary">願い出る</button>
+            </div>
+            <div class="position-card">
+                <h3 class="position-title">蹴鞠の師範</h3>
+                <div class="position-meta">
+                    <span>藤原氏 • 月百貫 • 三日前の記</span>
+                </div>
+                <p class="position-description">蹴鞠の技を極め、若き貴族たちに教え導く。優美な身のこなしと深い知識を持つ者を求む。</p>
+                <button class="btn btn-primary">願い出る</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3 class="footer-title">御台所方求人絵巻について</h3>
+                    <p class="footer-description">雅びなる仕事を求める方と、優れた人材を求める貴族様方を結ぶ、公認の求人絵巻にございます。</p>
+                </div>
+                <div>
+                    <h3 class="footer-title">御案内</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">御仕事を探す</a></li>
+                        <li><a href="#">人材を求める</a></li>
+                        <li><a href="#">御料金</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="footer-title">分野別</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">文芸</a></li>
+                        <li><a href="#">芸能</a></li>
+                        <li><a href="#">装束</a></li>
+                        <li><a href="#">料理</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="footer-title">その他</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">御使い方</a></li>
+                        <li><a href="#">よくある御質問</a></li>
+                        <li><a href="#">御約束事</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-to-top">↑</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollIndicator = document.querySelector('.scroll-progress');
+            const scrollToTop = document.querySelector('.scroll-to-top');
+
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                scrollIndicator.style.height = scrolled + '%';
+
+                if (winScroll > 500) {
+                    scrollToTop.classList.add('visible');
+                } else {
+                    scrollToTop.classList.remove('visible');
+                }
+            });
+
+            scrollToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // カード装飾効果
+            const cards = document.querySelectorAll('.featured-card, .position-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    card.style.background = `
+                        radial-gradient(
+                            circle at ${x}px ${y}px,
+                            rgba(185, 140, 70, 0.1) 0%,
+                            var(--surface) 50%
+                        )
+                    `;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.background = 'var(--surface)';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

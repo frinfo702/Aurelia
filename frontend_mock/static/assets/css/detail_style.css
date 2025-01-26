@@ -1,0 +1,117 @@
+/* detail_style.css */
+/* 3枚目の写真(Job Detail)をイメージしたスタイル */
+
+/* header */
+.detail-header {
+    background: #2d3848;
+    /* ダークめ */
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+
+.meta-nav a {
+    color: #ddd;
+    margin-left: 1rem;
+    text-decoration: none;
+}
+
+.meta-nav-right a {
+    margin-left: 1rem;
+    color: #ccc;
+}
+
+/* Job title section */
+.job-title-section {
+    background: #f5f6f7;
+    padding: 2rem 1rem;
+}
+
+.job-title-section h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.job-title-section p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.apply-job-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+}
+
+/* job detail section */
+.job-detail-section {
+    background: #fff;
+    padding: 2rem 1rem;
+}
+
+#job-detail-content {
+    line-height: 1.6;
+}
+
+#job-detail-content h2 {
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+}
+
+#job-detail-content ul {
+    list-style-type: disc;
+    margin-left: 2rem;
+}
+
+#job-detail-content li {
+    margin-bottom: 0.5rem;
+}
+
+/* locations-map */
+.locations-map {
+    padding: 2rem 0;
+}
+
+.locations-map h2 {
+    margin-bottom: 1rem;
+}
+
+/* about-company */
+.about-company {
+    padding: 2rem 0;
+}
+
+/* footer */
+.detail-footer {
+    background: #f5f6f7;
+    padding: 2rem 1rem;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-col {
+    min-width: 120px;
+}
+
+.footer-col h4 {
+    margin-bottom: 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
