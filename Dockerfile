@@ -1,5 +1,5 @@
 # ベースイメージ
-FROM golang:1.22-alpine
+FROM golang:1.22-alpine AS builder
 
 # 作業ディレクトリの作成
 WORKDIR /app
@@ -12,7 +12,7 @@ RUN go mod download
 COPY . .
 
 # ビルド
-RUN go build -o server cmd/server/main.go
+RUN go build -o server Aurelia/cmd/server/main.go
 
 # エントリーポイント
 CMD ["./server"]
