@@ -12,13 +12,13 @@ import (
 )
 
 var (
-	dbHost     = "db"
+	dbHost     = os.Getenv("DB_HOST")
 	dbPort     = 5432
 	dbUser     = os.Getenv("DB_USERNAME")
 	dbPassword = os.Getenv("DB_PASSWORD")
-	dbName     = "aurelia_db"
+	dbName     = os.Getenv("DB_NAME")
 	psqlInfo   = fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
+		"password=%s dbname=%s sslmode=require",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
 )
 
