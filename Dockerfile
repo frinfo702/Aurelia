@@ -12,7 +12,7 @@ RUN go mod download
 COPY . .
 
 # ビルド
-RUN go build -o server Aurelia/cmd/server/main.go
+RUN go build -o server cmd/server/main.go
 
 # エントリーポイント
 CMD ["./server"]
