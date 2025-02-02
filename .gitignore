@@ -25,3 +25,8 @@ go.work.sum
 .env 
 
 # frontend_mock file
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
