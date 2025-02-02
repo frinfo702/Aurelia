@@ -18,7 +18,7 @@ var (
 	dbPassword = os.Getenv("DB_PASSWORD")
 	dbName     = os.Getenv("DB_NAME")
 	psqlInfo   = fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=require",
+		"password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
 )
 
