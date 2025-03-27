@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企業ダッシュボード - Aurelia</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .dashboard-content {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 2rem;
+    }
+    
+    .dashboard-sidebar {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 1rem;
+    }
+    
+    .sidebar-menu a {
+      display: block;
+      padding: 0.75rem;
+      color: var(--text-color);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background-color: var(--light-gray);
+      color: var(--primary-color);
+    }
+    
+    .dashboard-main {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+    
+    .job-list {
+      margin-top: 1rem;
+    }
+    
+    .job-item {
+      border-bottom: 1px solid var(--light-gray);
+      padding: 1rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .job-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .job-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      background-color: var(--light-gray);
+    }
+    
+    .status-active {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .status-draft {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-closed {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem 0;
+      color: #666;
+    }
+    
+    .empty-state p {
+      margin-bottom: 1.5rem;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background-color: var(--light-gray);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Aurelia</div>
+        <ul class="nav-links">
+          <li><a href="/">ホーム</a></li>
+          <li><a href="/jobs">求人一覧</a></li>
+          <li><a href="/dashboard">ダッシュボード</a></li>
+          <li><a href="#" id="logout-link">ログアウト</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="dashboard-header">
+      <h1>企業ダッシュボード</h1>
+      <a href="/create-job" class="btn btn-primary">新規求人作成</a>
+    </div>
+    
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <div class="stat-value" id="total-jobs">0</div>
+        <div class="stat-label">全求人数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="active-jobs">0</div>
+        <div class="stat-label">アクティブな求人</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="total-applicants">0</div>
+        <div class="stat-label">合計応募者数</div>
+      </div>
+    </div>
+    
+    <div class="dashboard-content">
+      <div class="dashboard-sidebar">
+        <h2>メニュー</h2>
+        <ul class="sidebar-menu">
+          <li><a href="/dashboard" class="active">求人管理</a></li>
+          <li><a href="#">応募者管理</a></li>
+          <li><a href="#">企業プロフィール</a></li>
+          <li><a href="#">設定</a></li>
+        </ul>
+      </div>
+      
+      <div class="dashboard-main">
+        <h2>求人一覧</h2>
+        
+        <div id="job-list" class="job-list">
+          <div class="loading">読み込み中...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Aurelia. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const jobList = document.getElementById('job-list');
+      const totalJobsElement = document.getElementById('total-jobs');
+      const activeJobsElement = document.getElementById('active-jobs');
+      const logoutLink = document.getElementById('logout-link');
+      
+      // ログイン確認
+      const isLoggedIn = localStorage.getItem('aureliaLoggedIn') === 'true';
+      if (!isLoggedIn) {
+        window.location.href = '/login';
+        return;
+      }
+      
+      // ログアウト処理
+      logoutLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('aureliaLoggedIn');
+        localStorage.removeItem('aureliaUserEmail');
+        window.location.href = '/';
+      });
+      
+      // デモ用の求人データ
+      const demoJobs = [
+        { 
+          job_id: 1, 
+          job_tag: 'Webフロントエンドエンジニア', 
+          hiring_type: '正社員', 
+          status: 'active', 
+          created_at: '2023-12-01',
+          applicants: 5
+        },
+        { 
+          job_id: 2, 
+          job_tag: 'バックエンドエンジニア', 
+          hiring_type: '契約社員', 
+          status: 'active', 
+          created_at: '2023-11-15',
+          applicants: 3
+        },
+        { 
+          job_id: 3, 
+          job_tag: 'モバイルアプリ開発者', 
+          hiring_type: 'フリーランス', 
+          status: 'draft', 
+          created_at: '2023-11-10',
+          applicants: 0
+        }
+      ];
+      
+      // 実際のAPIを使用する場合は以下のようなコードを使用
+      /*
+      fetch('/api/companies/me/jobs', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('aureliaToken')}`
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('求人情報の取得に失敗しました');
+        }
+        return response.json();
+      })
+      .then(jobs => {
+        renderJobs(jobs);
+        updateStats(jobs);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        jobList.innerHTML = '<p>求人情報の取得に失敗しました。ログインしなおすか、後ほど再度お試しください。</p>';
+      });
+      */
+      
+      // デモ用データでのレンダリング
+      renderJobs(demoJobs);
+      updateStats(demoJobs);
+      
+      function renderJobs(jobs) {
+        if (jobs.length === 0) {
+          jobList.innerHTML = `
+            <div class="empty-state">
+              <p>まだ求人が登録されていません。</p>
+              <a href="/create-job" class="btn btn-primary">最初の求人を作成する</a>
+            </div>
+          `;
+          return;
+        }
+        
+        let jobsHTML = '';
+        
+        jobs.forEach(job => {
+          let statusClass = '';
+          let statusText = '';
+          
+          switch(job.status) {
+            case 'active':
+              statusClass = 'status-active';
+              statusText = '公開中';
+              break;
+            case 'draft':
+              statusClass = 'status-draft';
+              statusText = '下書き';
+              break;
+            case 'closed':
+              statusClass = 'status-closed';
+              statusText = '締切';
+              break;
+            default:
+              statusClass = '';
+              statusText = '未設定';
+          }
+          
+          jobsHTML += `
+            <div class="job-item">
+              <div class="job-info">
+                <h3>${job.job_tag}</h3>
+                <p>雇用形態: ${job.hiring_type} | 応募数: ${job.applicants} | 作成日: ${job.created_at}</p>
+              </div>
+              <div class="job-actions">
+                <span class="job-status ${statusClass}">${statusText}</span>
+                <a href="/jobs/${job.job_id}" class="btn">詳細</a>
+                <a href="#" class="btn">編集</a>
+              </div>
+            </div>
+          `;
+        });
+        
+        jobList.innerHTML = jobsHTML;
+      }
+      
+      function updateStats(jobs) {
+        const totalJobs = jobs.length;
+        const activeJobs = jobs.filter(job => job.status === 'active').length;
+        const totalApplicants = jobs.reduce((sum, job) => sum + (job.applicants || 0), 0);
+        
+        totalJobsElement.textContent = totalJobs;
+        activeJobsElement.textContent = activeJobs;
+        document.getElementById('total-applicants').textContent = totalApplicants;
+      }
+    });
+  </script>
+</body>
+</html> 

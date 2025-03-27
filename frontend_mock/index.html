@@ -15,8 +15,10 @@
         <ul class="nav-links">
           <li><a href="/">ホーム</a></li>
           <li><a href="/jobs">求人一覧</a></li>
-          <li><a href="/login">ログイン</a></li>
-          <li><a href="/signup">新規登録</a></li>
+          <li><a href="/login" id="login-link">ログイン</a></li>
+          <li><a href="/signup" id="signup-link">新規登録</a></li>
+          <li><a href="/dashboard" id="dashboard-link" style="display: none;">ダッシュボード</a></li>
+          <li><a href="#" id="logout-link" style="display: none;">ログアウト</a></li>
         </ul>
       </nav>
     </div>
@@ -59,8 +61,33 @@
   </footer>
 
   <script>
-    // 最新の求人を取得して表示する
+    // ログイン状態に応じてナビゲーションを変更
     document.addEventListener('DOMContentLoaded', function() {
+      const loginLink = document.getElementById('login-link');
+      const signupLink = document.getElementById('signup-link');
+      const dashboardLink = document.getElementById('dashboard-link');
+      const logoutLink = document.getElementById('logout-link');
+      
+      // ログイン状態をチェック
+      const isLoggedIn = localStorage.getItem('aureliaLoggedIn') === 'true';
+      
+      if (isLoggedIn) {
+        // ログイン済みの場合
+        loginLink.style.display = 'none';
+        signupLink.style.display = 'none';
+        dashboardLink.style.display = 'inline-block';
+        logoutLink.style.display = 'inline-block';
+        
+        // ログアウト処理
+        logoutLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          localStorage.removeItem('aureliaLoggedIn');
+          localStorage.removeItem('aureliaUserEmail');
+          window.location.reload();
+        });
+      }
+      
+      // 最新の求人を取得して表示する
       fetch('/api/jobs')
         .then(response => response.json())
         .then(jobs => {
