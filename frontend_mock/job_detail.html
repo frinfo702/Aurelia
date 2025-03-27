@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>求人詳細 - Aurelia</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .job-detail {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .job-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+    
+    .job-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      background-color: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    
+    .job-meta-item {
+      margin-bottom: 1rem;
+    }
+    
+    .job-meta-item h3 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      color: var(--secondary-color);
+    }
+    
+    .job-requirements {
+      margin: 2rem 0;
+      line-height: 1.8;
+    }
+    
+    .job-requirements h2 {
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+    
+    .job-technologies {
+      margin: 2rem 0;
+    }
+    
+    .job-technologies h2 {
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+    
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .tech-tag {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .apply-container {
+      text-align: center;
+      margin: 2rem 0;
+      padding: 2rem;
+      background-color: var(--light-gray);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Aurelia</div>
+        <ul class="nav-links">
+          <li><a href="/">ホーム</a></li>
+          <li><a href="/jobs">求人一覧</a></li>
+          <li><a href="/login">ログイン</a></li>
+          <li><a href="/signup">新規登録</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="job-container">
+    <div class="job-detail">
+      <p>読み込み中...</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Aurelia. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const jobContainer = document.getElementById('job-container');
+      
+      // URLから求人IDを取得
+      const path = window.location.pathname;
+      const jobId = path.split('/').pop();
+      
+      // 求人詳細を取得
+      fetch(`/api/jobs/${jobId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('求人情報の取得に失敗しました');
+          }
+          return response.json();
+        })
+        .then(job => {
+          // 技術スタックを配列に変換（カンマ区切りと仮定）
+          const technologies = job.used_technology ? job.used_technology.split(',').map(tech => tech.trim()) : [];
+          
+          // HTML作成
+          jobContainer.innerHTML = `
+            <a href="/jobs" class="btn">&larr; 求人一覧に戻る</a>
+            
+            <div class="job-detail">
+              <h1 class="job-title">${job.job_tag || '未設定のポジション'}</h1>
+              
+              <div class="job-meta">
+                <div class="job-meta-item">
+                  <h3>雇用形態</h3>
+                  <p>${job.hiring_type || '未設定'}</p>
+                </div>
+                
+                <div class="job-meta-item">
+                  <h3>技術タイプ</h3>
+                  <p>${job.technology_type || '未設定'}</p>
+                </div>
+                
+                <div class="job-meta-item">
+                  <h3>年収</h3>
+                  <p>${job.income_range ? job.income_range + '万円' : '未設定'}</p>
+                </div>
+                
+                <div class="job-meta-item">
+                  <h3>ステータス</h3>
+                  <p>${job.application_status || '募集中'}</p>
+                </div>
+              </div>
+              
+              <div class="job-requirements">
+                <h2>業務内容と要件</h2>
+                <p>${job.requirements || '詳細情報がありません。'}</p>
+              </div>
+              
+              <div class="job-technologies">
+                <h2>使用技術</h2>
+                ${technologies.length > 0 ? 
+                  `<div class="tech-tags">
+                    ${technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                  </div>` : 
+                  '<p>使用技術の情報がありません。</p>'
+                }
+              </div>
+              
+              <div class="apply-container">
+                <h2>この求人に応募する</h2>
+                <p>応募にはログインが必要です。</p>
+                <a href="/apply?job_id=${job.job_id}" class="btn btn-primary">応募する</a>
+              </div>
+            </div>
+          `;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          jobContainer.innerHTML = `
+            <div class="job-detail">
+              <h1>エラーが発生しました</h1>
+              <p>求人情報の取得に失敗しました。後ほど再度お試しください。</p>
+              <a href="/jobs" class="btn">&larr; 求人一覧に戻る</a>
+            </div>
+          `;
+        });
+    });
+  </script>
+</body>
+</html> 

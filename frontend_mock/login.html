@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - Aurelia</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .auth-container {
+      max-width: 500px;
+      margin: 2rem auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+    
+    .auth-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--primary-color);
+    }
+    
+    .auth-form {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+    }
+    
+    .form-divider::before,
+    .form-divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .form-divider-text {
+      padding: 0 10px;
+      color: #777;
+    }
+    
+    .auth-links {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    
+    .auth-links a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .auth-links a:hover {
+      text-decoration: underline;
+    }
+    
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .remember-me input {
+      width: auto;
+      margin-right: 0.5rem;
+    }
+    
+    .forgot-password {
+      text-align: right;
+      margin-bottom: 1.5rem;
+    }
+    
+    .forgot-password a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Aurelia</div>
+        <ul class="nav-links">
+          <li><a href="/">ホーム</a></li>
+          <li><a href="/jobs">求人一覧</a></li>
+          <li><a href="/login">ログイン</a></li>
+          <li><a href="/signup">新規登録</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="auth-container">
+      <h1 class="auth-title">ログイン</h1>
+      
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="email">メールアドレス</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">パスワード</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div class="remember-me">
+          <input type="checkbox" id="remember-me" name="remember_me">
+          <label for="remember-me">ログイン状態を保持する</label>
+        </div>
+        
+        <div class="forgot-password">
+          <a href="#">パスワードをお忘れですか？</a>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">ログイン</button>
+      </form>
+      
+      <div class="form-divider">
+        <span class="form-divider-text">または</span>
+      </div>
+      
+      <div class="auth-links">
+        <p>アカウントをお持ちでない方は <a href="/signup">新規登録</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Aurelia. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('login-form');
+      
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        // デモ用の簡易的なログイン処理
+        if (email && password) {
+          // 実際のAPIエンドポイントに送信する代わりにローカルストレージに保存
+          localStorage.setItem('aureliaLoggedIn', 'true');
+          localStorage.setItem('aureliaUserEmail', email);
+          
+          // ホームページにリダイレクト
+          window.location.href = '/';
+        } else {
+          alert('メールアドレスとパスワードを入力してください。');
+        }
+        
+        // 実際のAPIエンドポイントに送信する場合は以下のようなコードを使用
+        /*
+        fetch('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: email,
+            password: password
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('ログインに失敗しました');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // トークンをローカルストレージに保存
+          localStorage.setItem('aureliaToken', data.token);
+          localStorage.setItem('aureliaUserEmail', email);
+          
+          // ホームページにリダイレクト
+          window.location.href = '/';
+        })
+        .catch(error => {
+          alert('エラーが発生しました：' + error.message);
+        });
+        */
+      });
+    });
+  </script>
+</body>
+</html> 

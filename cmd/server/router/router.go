@@ -42,7 +42,7 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/login", htmlLogInHandler).Methods(http.MethodGet)
 
 	r.PathPrefix("/static/").Handler(
-		http.StripPrefix("/static/", http.FileServer(http.Dir("/app/frontend_mock/static"))),
+		http.StripPrefix("/static/", http.FileServer(http.Dir("frontend_mock/static"))),
 	)
 
 	return r
