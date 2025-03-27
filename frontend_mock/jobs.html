@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>求人一覧 - Aurelia</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .filter-container {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 2rem 0;
+    }
+    
+    .pagination li {
+      margin: 0 0.5rem;
+    }
+    
+    .pagination a {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--primary-color);
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--primary-color);
+    }
+    
+    .pagination .active a {
+      background-color: var(--primary-color);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Aurelia</div>
+        <ul class="nav-links">
+          <li><a href="/">ホーム</a></li>
+          <li><a href="/jobs">求人一覧</a></li>
+          <li><a href="/login">ログイン</a></li>
+          <li><a href="/signup">新規登録</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>求人一覧</h1>
+    
+    <div class="filter-container">
+      <h2>検索条件</h2>
+      <form id="filter-form">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="hiring-type">雇用形態</label>
+            <select id="hiring-type" name="hiring_type">
+              <option value="">すべて</option>
+              <option value="正社員">正社員</option>
+              <option value="契約社員">契約社員</option>
+              <option value="フリーランス">フリーランス</option>
+              <option value="パートタイム">パートタイム</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="technology-type">技術タイプ</label>
+            <select id="technology-type" name="technology_type">
+              <option value="">すべて</option>
+              <option value="フロントエンド">フロントエンド</option>
+              <option value="バックエンド">バックエンド</option>
+              <option value="フルスタック">フルスタック</option>
+              <option value="モバイル">モバイル</option>
+              <option value="インフラ">インフラ</option>
+              <option value="データサイエンス">データサイエンス</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="income-range">年収（万円）</label>
+            <select id="income-range" name="income_range">
+              <option value="">すべて</option>
+              <option value="300">300万円以上</option>
+              <option value="400">400万円以上</option>
+              <option value="500">500万円以上</option>
+              <option value="600">600万円以上</option>
+              <option value="700">700万円以上</option>
+              <option value="800">800万円以上</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">検索</button>
+      </form>
+    </div>
+    
+    <div id="jobs-container" class="jobs-grid">
+      <p>読み込み中...</p>
+    </div>
+    
+    <ul id="pagination" class="pagination">
+      <!-- ページネーションはJavaScriptで動的に生成 -->
+    </ul>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Aurelia. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const jobsContainer = document.getElementById('jobs-container');
+      const paginationContainer = document.getElementById('pagination');
+      const filterForm = document.getElementById('filter-form');
+      
+      let allJobs = [];
+      let filteredJobs = [];
+      let currentPage = 1;
+      const jobsPerPage = 9;
+      
+      // フィルター適用
+      function applyFilters() {
+        const hiringType = document.getElementById('hiring-type').value;
+        const technologyType = document.getElementById('technology-type').value;
+        const incomeRange = document.getElementById('income-range').value;
+        
+        filteredJobs = allJobs.filter(job => {
+          let match = true;
+          
+          if (hiringType && job.hiring_type !== hiringType) {
+            match = false;
+          }
+          
+          if (technologyType && job.technology_type !== technologyType) {
+            match = false;
+          }
+          
+          if (incomeRange && job.income_range < parseInt(incomeRange)) {
+            match = false;
+          }
+          
+          return match;
+        });
+        
+        currentPage = 1;
+        renderJobs();
+        renderPagination();
+      }
+      
+      // 求人カードの表示
+      function renderJobs() {
+        if (filteredJobs.length === 0) {
+          jobsContainer.innerHTML = '<p>検索条件に一致する求人はありません。</p>';
+          return;
+        }
+        
+        const startIndex = (currentPage - 1) * jobsPerPage;
+        const endIndex = startIndex + jobsPerPage;
+        const jobsToShow = filteredJobs.slice(startIndex, endIndex);
+        
+        jobsContainer.innerHTML = '';
+        
+        jobsToShow.forEach(job => {
+          const jobCard = document.createElement('div');
+          jobCard.className = 'card';
+          jobCard.innerHTML = `
+            <h3>${job.job_tag || '未設定'}</h3>
+            <p>雇用形態: ${job.hiring_type || '未設定'}</p>
+            <p>技術タイプ: ${job.technology_type || '未設定'}</p>
+            <p>年収: ${job.income_range ? job.income_range + '万円' : '未設定'}</p>
+            <a href="/jobs/${job.job_id}" class="btn">詳細を見る</a>
+          `;
+          jobsContainer.appendChild(jobCard);
+        });
+      }
+      
+      // ページネーションの表示
+      function renderPagination() {
+        const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+        
+        if (totalPages <= 1) {
+          paginationContainer.innerHTML = '';
+          return;
+        }
+        
+        let paginationHTML = '';
+        
+        for (let i = 1; i <= totalPages; i++) {
+          paginationHTML += `
+            <li class="${i === currentPage ? 'active' : ''}">
+              <a href="#" data-page="${i}">${i}</a>
+            </li>
+          `;
+        }
+        
+        paginationContainer.innerHTML = paginationHTML;
+        
+        // ページネーションのクリックイベント
+        const pageLinks = paginationContainer.querySelectorAll('a');
+        pageLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            currentPage = parseInt(this.dataset.page);
+            renderJobs();
+            renderPagination();
+            window.scrollTo(0, 0);
+          });
+        });
+      }
+      
+      // 初期データの読み込み
+      fetch('/api/jobs')
+        .then(response => response.json())
+        .then(jobs => {
+          allJobs = jobs;
+          filteredJobs = jobs;
+          renderJobs();
+          renderPagination();
+        })
+        .catch(error => {
+          console.error('Error fetching jobs:', error);
+          jobsContainer.innerHTML = 
+            '<p>求人情報の取得に失敗しました。後ほど再度お試しください。</p>';
+        });
+      
+      // フィルターフォームの送信イベント
+      filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        applyFilters();
+      });
+    });
+  </script>
+</body>
+</html> 

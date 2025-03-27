@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>求人作成 - Aurelia</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .create-job-form {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .form-section {
+      margin-bottom: 2rem;
+    }
+    
+    .form-section h3 {
+      color: var(--secondary-color);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .form-col {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .required-label {
+      color: red;
+      margin-left: 0.25rem;
+    }
+    
+    .success-message,
+    .error-message {
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Aurelia</div>
+        <ul class="nav-links">
+          <li><a href="/">ホーム</a></li>
+          <li><a href="/jobs">求人一覧</a></li>
+          <li><a href="/dashboard">ダッシュボード</a></li>
+          <li><a href="#" id="logout-link">ログアウト</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="form-header">
+      <h1>新規求人作成</h1>
+      <a href="/dashboard" class="btn">ダッシュボードに戻る</a>
+    </div>
+    
+    <div id="success-message" class="success-message">
+      求人が正常に作成されました。
+    </div>
+    
+    <div id="error-message" class="error-message">
+      求人の作成中にエラーが発生しました。
+    </div>
+    
+    <div class="create-job-form">
+      <form id="job-form">
+        <div class="form-section">
+          <h3>基本情報</h3>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="job-tag">
+                  求人タイトル
+                  <span class="required-label">*</span>
+                </label>
+                <input type="text" id="job-tag" name="job_tag" required>
+                <small>例: Webフロントエンドエンジニア、バックエンドエンジニアなど</small>
+              </div>
+            </div>
+            
+            <div class="form-col">
+              <div class="form-group">
+                <label for="hiring-type">
+                  雇用形態
+                  <span class="required-label">*</span>
+                </label>
+                <select id="hiring-type" name="hiring_type" required>
+                  <option value="">選択してください</option>
+                  <option value="正社員">正社員</option>
+                  <option value="契約社員">契約社員</option>
+                  <option value="フリーランス">フリーランス</option>
+                  <option value="パートタイム">パートタイム</option>
+                  <option value="インターン">インターン</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="technology-type">
+                  技術タイプ
+                  <span class="required-label">*</span>
+                </label>
+                <select id="technology-type" name="technology_type" required>
+                  <option value="">選択してください</option>
+                  <option value="フロントエンド">フロントエンド</option>
+                  <option value="バックエンド">バックエンド</option>
+                  <option value="フルスタック">フルスタック</option>
+                  <option value="モバイル">モバイル</option>
+                  <option value="インフラ">インフラ</option>
+                  <option value="データサイエンス">データサイエンス</option>
+                  <option value="AI/ML">AI/ML</option>
+                  <option value="DevOps">DevOps</option>
+                  <option value="その他">その他</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-col">
+              <div class="form-group">
+                <label for="income-range">
+                  年収（万円）
+                  <span class="required-label">*</span>
+                </label>
+                <input type="number" id="income-range" name="income_range" min="0" required>
+                <small>例: 500（500万円）</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>詳細情報</h3>
+          
+          <div class="form-group">
+            <label for="requirements">
+              業務内容・要件
+              <span class="required-label">*</span>
+            </label>
+            <textarea id="requirements" name="requirements" rows="5" required></textarea>
+            <small>具体的な業務内容、求めるスキル、経験などを記載してください。</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="used-technology">
+              使用技術
+              <span class="required-label">*</span>
+            </label>
+            <input type="text" id="used-technology" name="used_technology" required>
+            <small>カンマ区切りで入力してください。例: JavaScript, React, Node.js, PostgreSQL</small>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>公開設定</h3>
+          
+          <div class="form-group">
+            <label for="application-status">ステータス</label>
+            <select id="application-status" name="application_status">
+              <option value="募集中">募集中</option>
+              <option value="下書き">下書き（非公開）</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button type="button" id="cancel-btn" class="btn">キャンセル</button>
+          <button type="submit" class="btn btn-primary">求人を作成する</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Aurelia. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const jobForm = document.getElementById('job-form');
+      const cancelBtn = document.getElementById('cancel-btn');
+      const successMessage = document.getElementById('success-message');
+      const errorMessage = document.getElementById('error-message');
+      const logoutLink = document.getElementById('logout-link');
+      
+      // ログイン確認
+      const isLoggedIn = localStorage.getItem('aureliaLoggedIn') === 'true';
+      if (!isLoggedIn) {
+        window.location.href = '/login';
+        return;
+      }
+      
+      // ログアウト処理
+      logoutLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('aureliaLoggedIn');
+        localStorage.removeItem('aureliaUserEmail');
+        window.location.href = '/';
+      });
+      
+      // キャンセルボタン
+      cancelBtn.addEventListener('click', function() {
+        window.location.href = '/dashboard';
+      });
+      
+      // フォーム送信
+      jobForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // フォームデータの収集
+        const formData = new FormData(this);
+        const jobData = Object.fromEntries(formData.entries());
+        
+        // デモ用 - 実際はAPIにPOSTリクエストを送信
+        console.log('求人データ:', jobData);
+        
+        // 成功メッセージ表示とリダイレクト
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        
+        setTimeout(function() {
+          window.location.href = '/dashboard';
+        }, 2000);
+        
+        // 実際のAPIエンドポイントに送信する場合は以下のようなコードを使用
+        /*
+        fetch('/api/companies/me/jobs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('aureliaToken')}`
+          },
+          body: JSON.stringify(jobData)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('求人の作成に失敗しました');
+          }
+          return response.json();
+        })
+        .then(data => {
+          successMessage.style.display = 'block';
+          errorMessage.style.display = 'none';
+          
+          setTimeout(function() {
+            window.location.href = '/dashboard';
+          }, 2000);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          errorMessage.style.display = 'block';
+          errorMessage.textContent = `エラー: ${error.message}`;
+          successMessage.style.display = 'none';
+        });
+        */
+      });
+    });
+  </script>
+</body>
+</html> 

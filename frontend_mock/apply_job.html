@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>求人応募 - Aurelia</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .apply-form {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .job-summary {
+      background-color: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    
+    .job-summary h2 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .job-summary-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .form-section {
+      margin-bottom: 2rem;
+    }
+    
+    .form-section h3 {
+      color: var(--secondary-color);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .btn-container {
+      margin-top: 2rem;
+      text-align: right;
+    }
+    
+    .file-input {
+      margin-bottom: 1rem;
+    }
+    
+    .success-message {
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .error-message {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Aurelia</div>
+        <ul class="nav-links">
+          <li><a href="/">ホーム</a></li>
+          <li><a href="/jobs">求人一覧</a></li>
+          <li><a href="/login">ログイン</a></li>
+          <li><a href="/signup">新規登録</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>求人応募</h1>
+    
+    <div id="success-message" class="success-message">
+      応募が正常に送信されました。企業からの連絡をお待ちください。
+    </div>
+    
+    <div id="error-message" class="error-message">
+      応募の送信中にエラーが発生しました。後ほど再度お試しください。
+    </div>
+    
+    <div id="apply-container">
+      <div class="apply-form">
+        <div id="job-summary" class="job-summary">
+          <h2>応募求人情報</h2>
+          <p>読み込み中...</p>
+        </div>
+        
+        <form id="apply-form">
+          <input type="hidden" id="job-id" name="job_id">
+          
+          <div class="form-section">
+            <h3>基本情報</h3>
+            
+            <div class="form-group">
+              <label for="name">氏名 <span style="color: red;">*</span></label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">メールアドレス <span style="color: red;">*</span></label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">電話番号</label>
+              <input type="tel" id="phone" name="phone">
+            </div>
+          </div>
+          
+          <div class="form-section">
+            <h3>職務経歴</h3>
+            
+            <div class="form-group">
+              <label for="years-experience">経験年数 <span style="color: red;">*</span></label>
+              <select id="years-experience" name="years_experience" required>
+                <option value="">選択してください</option>
+                <option value="0-1">1年未満</option>
+                <option value="1-3">1-3年</option>
+                <option value="3-5">3-5年</option>
+                <option value="5-10">5-10年</option>
+                <option value="10+">10年以上</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="skills">スキル・技術 <span style="color: red;">*</span></label>
+              <textarea id="skills" name="skills" rows="4" required placeholder="例: JavaScript, React, Node.js, PostgreSQL"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="resume" class="file-input">履歴書</label>
+              <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+              <small>PDF, Word形式 (最大5MB)</small>
+            </div>
+            
+            <div class="form-group">
+              <label for="portfolio">ポートフォリオURL</label>
+              <input type="url" id="portfolio" name="portfolio" placeholder="https://...">
+            </div>
+          </div>
+          
+          <div class="form-section">
+            <h3>応募理由</h3>
+            
+            <div class="form-group">
+              <label for="motivation">志望動機 <span style="color: red;">*</span></label>
+              <textarea id="motivation" name="motivation" rows="5" required></textarea>
+            </div>
+          </div>
+          
+          <div class="btn-container">
+            <button type="button" id="cancel-btn" class="btn">キャンセル</button>
+            <button type="submit" class="btn btn-primary">応募する</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Aurelia. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const jobSummary = document.getElementById('job-summary');
+      const jobIdInput = document.getElementById('job-id');
+      const applyForm = document.getElementById('apply-form');
+      const cancelBtn = document.getElementById('cancel-btn');
+      const successMessage = document.getElementById('success-message');
+      const errorMessage = document.getElementById('error-message');
+      const applyContainer = document.getElementById('apply-container');
+      
+      // URLパラメータから求人IDを取得
+      const urlParams = new URLSearchParams(window.location.search);
+      const jobId = urlParams.get('job_id');
+      
+      if (!jobId) {
+        // 求人IDがない場合は求人一覧ページにリダイレクト
+        window.location.href = '/jobs';
+        return;
+      }
+      
+      // 求人詳細を取得
+      fetch(`/api/jobs/${jobId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('求人情報の取得に失敗しました');
+          }
+          return response.json();
+        })
+        .then(job => {
+          // 求人IDをフォームに設定
+          jobIdInput.value = job.job_id;
+          
+          // 求人概要を表示
+          jobSummary.innerHTML = `
+            <h2>${job.job_tag || '未設定のポジション'}</h2>
+            <div class="job-summary-details">
+              <div>
+                <strong>雇用形態:</strong>
+                <p>${job.hiring_type || '未設定'}</p>
+              </div>
+              <div>
+                <strong>技術タイプ:</strong>
+                <p>${job.technology_type || '未設定'}</p>
+              </div>
+              <div>
+                <strong>年収:</strong>
+                <p>${job.income_range ? job.income_range + '万円' : '未設定'}</p>
+              </div>
+            </div>
+          `;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          jobSummary.innerHTML = `
+            <h2>エラーが発生しました</h2>
+            <p>求人情報の取得に失敗しました。<a href="/jobs">求人一覧に戻る</a></p>
+          `;
+        });
+      
+      // キャンセルボタンのイベントハンドラ
+      cancelBtn.addEventListener('click', function() {
+        window.location.href = `/jobs/${jobId}`;
+      });
+      
+      // フォーム送信のイベントハンドラ
+      applyForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // ここで実際のAPIエンドポイントに送信する処理を実装
+        // デモのため、成功したと仮定して表示を切り替える
+        
+        // 成功メッセージを表示
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        applyContainer.style.display = 'none';
+        
+        // ページ上部にスクロール
+        window.scrollTo(0, 0);
+        
+        // 5秒後にリダイレクト
+        setTimeout(function() {
+          window.location.href = '/jobs';
+        }, 5000);
+      });
+    });
+  </script>
+</body>
+</html> 

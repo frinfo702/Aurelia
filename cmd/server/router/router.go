@@ -29,7 +29,7 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/api/auth/signup", authHandler.SignUpHandler).Methods(http.MethodPost)
 	r.HandleFunc("/api/auth/login", authHandler.LoginHandler).Methods(http.MethodPost)
 
-	sub := r.PathPrefix("api/comapanies/me").Subrouter()
+	sub := r.PathPrefix("/api/companies/me").Subrouter()
 	sub.Use(middleware.ValidateJWTMiddleware)
 	sub.HandleFunc("/jobs", jobHandler.CreateJobHandler).Methods(http.MethodPost)
 
@@ -40,9 +40,11 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/apply", htmlApplyJobHandler).Methods(http.MethodGet)
 	r.HandleFunc("/signup", htmlSignUpHandler).Methods(http.MethodGet)
 	r.HandleFunc("/login", htmlLogInHandler).Methods(http.MethodGet)
+	r.HandleFunc("/dashboard", htmlDashboardHandler).Methods(http.MethodGet)
+	r.HandleFunc("/create-job", htmlCreateJobHandler).Methods(http.MethodGet)
 
 	r.PathPrefix("/static/").Handler(
-		http.StripPrefix("/static/", http.FileServer(http.Dir("/app/frontend_mock/static"))),
+		http.StripPrefix("/static/", http.FileServer(http.Dir("frontend_mock/static"))),
 	)
 
 	return r
@@ -76,4 +78,14 @@ func htmlSignUpHandler(w http.ResponseWriter, req *http.Request) {
 // /login
 func htmlLogInHandler(w http.ResponseWriter, req *http.Request) {
 	http.ServeFile(w, req, "frontend_mock/login.html")
+}
+
+// /dashboard
+func htmlDashboardHandler(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, "frontend_mock/dashboard.html")
+}
+
+// /create-job
+func htmlCreateJobHandler(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, "frontend_mock/create_job.html")
 }

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia - 求人プラットフォーム</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Aurelia</div>
+        <ul class="nav-links">
+          <li><a href="/">ホーム</a></li>
+          <li><a href="/jobs">求人一覧</a></li>
+          <li><a href="/login" id="login-link">ログイン</a></li>
+          <li><a href="/signup" id="signup-link">新規登録</a></li>
+          <li><a href="/dashboard" id="dashboard-link" style="display: none;">ダッシュボード</a></li>
+          <li><a href="#" id="logout-link" style="display: none;">ログアウト</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>あなたにぴったりの求人を見つけよう</h1>
+      <p>Aureliaは、技術者のためのシンプルな求人プラットフォームです。理想の仕事を見つけて、キャリアを次のステージへ。</p>
+      <a href="/jobs" class="btn btn-primary">求人を探す</a>
+    </div>
+  </section>
+
+  <main class="container">
+    <h2>最新の求人情報</h2>
+    <div id="latest-jobs">
+      <p>読み込み中...</p>
+    </div>
+
+    <div class="features">
+      <div class="card">
+        <h3>簡単に求人を検索</h3>
+        <p>技術タイプ、雇用形態、給与範囲などで絞り込み検索が可能です。</p>
+      </div>
+      <div class="card">
+        <h3>企業向け求人掲載</h3>
+        <p>優秀なエンジニアを採用したい企業様は、簡単に求人を掲載できます。</p>
+      </div>
+      <div class="card">
+        <h3>シンプルな応募プロセス</h3>
+        <p>気になる求人にはワンクリックで応募。面倒な手続きは必要ありません。</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Aurelia. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ログイン状態に応じてナビゲーションを変更
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginLink = document.getElementById('login-link');
+      const signupLink = document.getElementById('signup-link');
+      const dashboardLink = document.getElementById('dashboard-link');
+      const logoutLink = document.getElementById('logout-link');
+      
+      // ログイン状態をチェック
+      const isLoggedIn = localStorage.getItem('aureliaLoggedIn') === 'true';
+      
+      if (isLoggedIn) {
+        // ログイン済みの場合
+        loginLink.style.display = 'none';
+        signupLink.style.display = 'none';
+        dashboardLink.style.display = 'inline-block';
+        logoutLink.style.display = 'inline-block';
+        
+        // ログアウト処理
+        logoutLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          localStorage.removeItem('aureliaLoggedIn');
+          localStorage.removeItem('aureliaUserEmail');
+          window.location.reload();
+        });
+      }
+      
+      // 最新の求人を取得して表示する
+      fetch('/api/jobs')
+        .then(response => response.json())
+        .then(jobs => {
+          const latestJobsContainer = document.getElementById('latest-jobs');
+          latestJobsContainer.innerHTML = '';
+          
+          // 最新の3件のみ表示
+          const latestJobs = jobs.slice(0, 3);
+          
+          if (latestJobs.length === 0) {
+            latestJobsContainer.innerHTML = '<p>現在、掲載されている求人はありません。</p>';
+            return;
+          }
+          
+          latestJobs.forEach(job => {
+            const jobCard = document.createElement('div');
+            jobCard.className = 'card';
+            jobCard.innerHTML = `
+              <h3>${job.job_tag || '未設定'}</h3>
+              <p>雇用形態: ${job.hiring_type || '未設定'}</p>
+              <p>技術タイプ: ${job.technology_type || '未設定'}</p>
+              <p>年収: ${job.income_range ? job.income_range + '万円' : '未設定'}</p>
+              <a href="/jobs/${job.job_id}" class="btn">詳細を見る</a>
+            `;
+            latestJobsContainer.appendChild(jobCard);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching jobs:', error);
+          document.getElementById('latest-jobs').innerHTML = 
+            '<p>求人情報の取得に失敗しました。後ほど再度お試しください。</p>';
+        });
+    });
+  </script>
+</body>
+</html> 
